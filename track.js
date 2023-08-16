@@ -165,6 +165,55 @@ var load = function() {
     });
 
 
+
+    var saveReportOptions = function(board, threadnum, callback) {
+        var reportUrl = `https://sys.4chan.org/${board}/imgboard.php?mode=report&no=${threadnum}`;
+        var reportPath = `reports/${board}.html`;
+    
+        // Create the 'reports' directory if it doesn't exist
+        fs.mkdirSync('reports', { recursive: true });
+    
+        get(reportUrl, function(body) {
+            var updatedBody = body.replace(new RegExp(threadnum, 'g'), '');
+            var beautifiedBody = htmlBeautify.prettyPrint(updatedBody);
+    
+            fs.writeFileSync(reportPath, beautifiedBody);
+    
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
+    var fetchAndSaveReportOptions = function() {
+        var boardsUrl = 'https://a.4cdn.org/boards.json';
+    
+        get(boardsUrl, function(body) {
+            var boardsData = JSON.parse(body);
+            var boards = boardsData.boards;
+    
+            for (var i = 0; i < boards.length; i++) {
+                (function(board) { // Use a closure to capture the current value of 'board'
+                    var catalogUrl = `https://a.4cdn.org/${board}/catalog.json`;
+    
+                    get(catalogUrl, function(catalogBody) {
+                        var catalogData = JSON.parse(catalogBody);
+                        var threads = catalogData[0].threads;
+    
+                        for (var j = 0; j < threads.length; j++) {
+                            var thread = threads[j];
+                            if (thread.filename && !thread.sticky) {
+                                saveReportOptions(board, thread.no);
+                                break; // Break the loop if a valid thread is found
+                            }
+                        }
+                    });
+                })(boards[i].board);
+            }
+        });
+    }
+    fetchAndSaveReportOptions();
+
     loadFile('https://www.4chan.org/faq', 'pages/faq.html');
     loadFile('https://www.4chan.org/rules', 'pages/rules.html');
     loadFile('https://www.4chan.org/4channews.php', 'pages/news.html');
