@@ -26,7 +26,7 @@
 	
 	.dd-menu {
 		font-size: 16px;
-		line-height: 2em;
+		line-height: 2.5em;
 	}
 	
 	.adg-rects > span.mobile {
@@ -812,12 +812,6 @@
 		margin-right: 0 !important;
 	}
 	
-	#captchaFormPart > td > div {
-		width: 310px !important;
-		overflow: hidden;
-		margin: 0 auto;
-	}
-	
 	#postForm {
 		width: auto;
 	}
@@ -851,10 +845,6 @@
 	.recaptcha_image_cell {
 		width: auto !important;
 		padding: 0 !important;
-	}
-	
-	#captchaFormPart > td > div {
-		margin-left: 8px;
 	}
 	
 	#recaptcha_table tr > td:last-child {

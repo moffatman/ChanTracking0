@@ -23,7 +23,7 @@ body {
 }
 
 .adg-rects {
-	margin: 10px 0;
+	margin: 0;
 	text-align: center;
 }
 
@@ -78,16 +78,42 @@ body {
 
 .adl {
 	font-size: 10px;
+	text-align: center;
 }
 
 .adl + .ad-bgls, .ad-bgls + .adl {
 	margin-top: 8px;
 }
 
+.danbo-slot {
+	width: 728px;
+	height: 90px;
+	margin: 10px auto;
+	overflow: hidden;
+}
+
+@media only screen and (max-width: 480px) {
+	.danbo-slot {
+		width: 300px;
+		height: 250px;
+	}
+	
+	
+}
+
 .bsa-cnt {
 	margin: 20px 0;
 	height: 90px;
 	text-align: center;
+}
+
+#t-root {
+	overflow: hidden;
+	box-sizing: border-box;
+	background: #eee;
+	border: 1px solid #777;
+	margin: 2px 0 2px 0;
+	width: 300px;
 }
 
 @media only screen and (max-width: 640px) {
@@ -119,6 +145,10 @@ body {
 	.adc-resp {
 		width: 300px;
 		height: 300px;
+	}
+	
+	#quickReply {
+		z-index: 9000 !important;
 	}
 	
 	.adc-resp-bg {
@@ -1764,4 +1794,83 @@ table.flashListing .subject {
 	50% {
 		opacity: 0;
 	}
+}
+
+.ogv-cnt {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	min-height: 16px;
+}
+
+.ogv-cnt:not(.ogv-detached)::before {
+	content: 'Loading…';
+	position: absolute;
+	top: 8px;
+	left: 0;
+	font-weight: bold;
+}
+
+.ogv-cnt.ogv-loaded::before {
+	display: none;
+}
+
+.ogv-cnt > ogvjs {
+	position: initial !important;
+}
+
+.ogv-ctrl {
+	position: absolute;
+	bottom: 0;
+	z-index: 2;
+	background: rgba(0, 0, 0, 0.65);
+	width: 100%;
+	height: 32px;
+	gap: 0;
+	display: none;
+}
+
+.ogv-btn {
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	color: white;
+}
+
+.ogv-btn svg {
+	vertical-align: middle;
+}
+
+.ogv-btn svg:last-child {
+	display: none;
+}
+
+.ogv-btn.ogv-toggled svg:first-child {
+	display: none;
+}
+
+.ogv-btn.ogv-toggled svg:last-child {
+	display: inline;
+}
+
+.ogv-ts {
+	font-family: sans-serif;
+	font-size: 10px;
+	text-align: center;
+	line-height: 32px;
+	width: 70px;
+	color: white;
+	overflow: hidden;
+}
+
+.ogv-vol {
+	width: 50px;
+	margin: 0;
+}
+
+.ogv-seek {
+	width: 0;
+	margin: 0;
+	flex-grow: 1;
 }

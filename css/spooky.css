@@ -7,8 +7,8 @@ html {
 }
 
 body {
-	background: #321f28;
-	color: #dfbaba;
+	background: #120c20;
+	color: #F0F8FFD1;
 	font-family: arial, helvetica, sans-serif;
 	font-size: 10pt;
 	margin-left: 0;
@@ -23,7 +23,7 @@ body {
 }
 
 .adg-rects {
-	margin: 10px 0;
+	margin: 0;
 	text-align: center;
 }
 
@@ -53,6 +53,12 @@ body {
 	height: 128px;
 }
 
+.adp-j {
+	margin: auto;
+	width: 728px;
+	height: 102px;
+}
+
 .adp-50 {
 	margin: auto;
 	width: 320px;
@@ -70,10 +76,44 @@ body {
 	margin: 0 10px;
 }
 
+.adl {
+	font-size: 10px;
+	text-align: center;
+}
+
+.adl + .ad-bgls, .ad-bgls + .adl {
+	margin-top: 8px;
+}
+
+.danbo-slot {
+	width: 728px;
+	height: 90px;
+	margin: 10px auto;
+	overflow: hidden;
+}
+
+@media only screen and (max-width: 480px) {
+	.danbo-slot {
+		width: 300px;
+		height: 250px;
+	}
+	
+	
+}
+
 .bsa-cnt {
 	margin: 20px 0;
 	height: 90px;
 	text-align: center;
+}
+
+#t-root {
+	overflow: hidden;
+	box-sizing: border-box;
+	background: #eee;
+	border: 1px solid #777;
+	margin: 2px 0 2px 0;
+	width: 300px;
 }
 
 @media only screen and (max-width: 640px) {
@@ -161,8 +201,10 @@ hr#op, #ctrl-top {
 	margin-top: -2px;
 }
 
-.n-pu {
-	background: url('//s.4cdn.org/image/minileaf.gif');
+.n-pu {  /* Pumpkin icon by twemoji is licensed under CC BY 4.0 (https://twitter.github.io/twemoji/) */
+	background: url('//s.4cdn.org/image/1f383.png');
+	-webkit-filter: drop-shadow(0px 0px 6px rgba(217,133,24,1)) brightness(125%);
+	filter: drop-shadow(0px 0px 6px rgba(217,133,24,1)) brightness(125%);
 }
 
 .n-jol {
@@ -569,7 +611,7 @@ div.boardBanner > div.boardSubtitle {
 }
 
 div#boardNavDesktop {
-	color: #321f28;
+	color: transparent;
 	font-size: 9pt;
 	display: block;
 }
@@ -626,7 +668,7 @@ div.post {
 
 
 div.reply {
-	background-color: #4d2d30;
+	background-color: #261e37;
 	border: none;
 	display: table;
 	padding: 2px;
@@ -854,7 +896,7 @@ div.deleteform input[type=checkbox] {
 
 div#boardNavDesktopFoot {
 	font-size: 9pt;
-	color: #321f28;
+	color: transparent;
 	clear: both;
 	padding-top: 10px;
 	padding-bottom: 3px;
@@ -1460,15 +1502,15 @@ table.flashListing .subject {
 }
 
 #postForm tr > td > .desktop, #ctrl-top, .navLinks.desktop, .postNum.desktop > span {
-	color: #321f28;
+	color: transparent;
 }
 
 .open-qr-wrap {
-	color: #321f28 !important;
+	color: transparent !important;
 }
 
 .navLinks.desktop > * {
-	color: #e79e4f;
+	color: #FF7518CF;
 }
 
 td {
@@ -1481,7 +1523,7 @@ td {
 }
 
 #togglePostFormLink {
-	color: #321f28;
+	color: transparent;
 	font-size: 22px;
 	font-weight: bold;
 	text-align: center;
@@ -1571,7 +1613,7 @@ td {
 	padding: 0;
 	margin: 0;
 	white-space: nowrap;
-	border-color: #a05344;
+	border-color: #FF7518CF;
 	border-bottom: 0;
 	border-right-width: 1px;
 }
@@ -1586,7 +1628,7 @@ td {
 	position: relative;
 	padding: 2px 4px;
 	vertical-align: middle;
-	border-bottom: 1px solid #a05344;
+	border-bottom: 1px solid#ff7518cf;
 }
 
 .dd-menu li:hover {
@@ -1649,7 +1691,7 @@ td {
 
 div.post div.postInfo span.postNum a:hover, .posteruid .hand:hover, .backlink span a.quotelink:hover, a:hover, .button:hover, .dd-menu li:hover, #arc-list .quotelink:hover, s .sjis:hover {
 	color: #ff9d1c !important;
-	text-shadow: 0 0 8px rgba(217, 133, 24, 1);
+	text-shadow: 0 0 12px rgba(217, 133, 24, 1);
 }
 
 .ws div.post div.postInfo span.subject {
@@ -1764,7 +1806,7 @@ div.sideArrows, hr {
 	}
 	
 	.quoteLink, .quotelink, .deadlink, a, a.visited, .button, .dd-menu li, .backlink span a.quotelink, #arc-list .quotelink, s .sjis {
-		color: #e79e4f !important;
+		color: #FF7518CF !important;
 	}
 	
 	.middlead a img, #bannerCnt {
@@ -1772,13 +1814,13 @@ div.sideArrows, hr {
 	}
 	
 	select {
-		border: 1px solid #734046;
-		background-color: #321f28;
-		color: #dfbaba;
+		border: 1px solid#ff7518cf;
+		background-color: #261e37;
+		color: #FF7518CF;
 	}
 	
 	#qrForm textarea, .extPanel input[type="text"], .extPanel textarea {
-		background-color: #321f28 !important;
+		background-color: #261e37 !important;
 	}
 	
 	.extPanel {
@@ -1790,12 +1832,12 @@ div.sideArrows, hr {
 		font-weight: bold;
 		padding: 0 5px;
 		font-size: 10pt;
-		background-color: #4d2d30;
+		background-color: #261e37;
 		border: 1px solid rgba(150, 180, 170, 0.3);
 	}
 	
 	.dd-menu ul {
-		background-color: #321f28;
+		background-color: #261e37;
 	}
 	
 	input::-moz-placeholder, textarea::-moz-placeholder, input::placeholder, textarea::placeholder, #quickReply #qrForm input::-moz-placeholder, #quickReply #qrForm input::placeholder, #quickReply #qrForm textarea::-moz-placeholder, #quickReply #qrForm textarea::placeholder {
@@ -1812,12 +1854,11 @@ div.sideArrows, hr {
 	}
 	
 	input[type=text], input[type=password], table.postForm > tbody textarea, #recaptcha_response_field {
-		background-color: #4d2d30;
-		color: #dfbaba;
+		background-color: #261e37;
+		color: #F0F8FFD1;
 	}
 	
-	a.replylink:not(:hover), div#absbot a:not(:hover) {
-		color: #d98518 !important;
+	a.replylink:not(:hover) {  /*color: #d98518 !important;*/
 	}
 	
 	.postblock {
@@ -1827,6 +1868,81 @@ div.sideArrows, hr {
 	
 }
 
-.extButton, .settings-expand, .panelCtrl img.pointer {
-	filter: hue-rotate(90deg) !important;
+.ogv-cnt {
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	min-height: 16px;
+}
+
+.ogv-cnt:not(.ogv-detached)::before {
+	content: 'Loading…';
+	position: absolute;
+	top: 8px;
+	left: 0;
+	font-weight: bold;
+}
+
+.ogv-cnt.ogv-loaded::before {
+	display: none;
+}
+
+.ogv-cnt > ogvjs {
+	position: initial !important;
+}
+
+.ogv-ctrl {
+	position: absolute;
+	bottom: 0;
+	z-index: 2;
+	background: rgba(0, 0, 0, 0.65);
+	width: 100%;
+	height: 32px;
+	gap: 0;
+	display: none;
+}
+
+.ogv-btn {
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+	color: white;
+}
+
+.ogv-btn svg {
+	vertical-align: middle;
+}
+
+.ogv-btn svg:last-child {
+	display: none;
+}
+
+.ogv-btn.ogv-toggled svg:first-child {
+	display: none;
+}
+
+.ogv-btn.ogv-toggled svg:last-child {
+	display: inline;
+}
+
+.ogv-ts {
+	font-family: sans-serif;
+	font-size: 10px;
+	text-align: center;
+	line-height: 32px;
+	width: 70px;
+	color: white;
+	overflow: hidden;
+}
+
+.ogv-vol {
+	width: 50px;
+	margin: 0;
+}
+
+.ogv-seek {
+	width: 0;
+	margin: 0;
+	flex-grow: 1;
 }
