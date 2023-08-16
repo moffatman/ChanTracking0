@@ -232,7 +232,6 @@ var FC = function() {
     $.on($orderCtrl, 'change', onOrderChange);
     $.on($threads, 'mouseover', onThreadMouseOver);
     $.on($threads, 'mouseout', onThreadMouseOut);
-    $.on($.id('togglePostFormLink').firstElementChild, 'click', window.showPostForm);
     $.on($.id('togglePostFormLinkMobile'), 'click', togglePostFormMobile);
     $.on(document, 'click', onClick);
     
@@ -471,6 +470,7 @@ var FC = function() {
       el.style.display = 'table';
       this.textContent = 'Close Post Form';
       window.initRecaptcha();
+      window.initTCaptcha();
     }
   }
   

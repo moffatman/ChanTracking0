@@ -7,6 +7,495 @@ var $L = {
 };
 
 /**
+ * Captcha
+*/
+var TCaptcha = {
+  node: null,
+  
+  frameNode: null,
+  imgCntNode: null,
+  bgNode: null,
+  fgNode: null,
+  msgNode: null,
+  sliderNode: null,
+  respNode: null,
+  reloadNode: null,
+  helpNode: null,
+  challengeNode: null,
+  
+  challenge: null,
+  
+  reloadTs: null,
+  reloadTimeout: null,
+  expireTimeout: null,
+  frameTimeout: null,
+  
+  errorCb: null,
+  
+  path: '/captcha',
+  
+  domain: null,
+  
+  init: function(el, board, thread_id) {
+    if (this.node) {
+      this.destroy();
+    }
+    
+    if (location.host.indexOf('.4channel.org') !== -1) {
+      this.domain = '4channel.org';
+    }
+    else {
+      this.domain = '4chan.org';
+    }
+    
+    this.node = el;
+    
+    el.style.position = 'relative';
+    
+    this.frameNode = null;
+    this.imgCntNode = this.buildImgCntNode();
+    this.bgNode = this.buildImgNode('bg');
+    this.fgNode = this.buildImgNode('fg');
+    this.sliderNode = this.buildSliderNode();
+    
+    this.respNode = this.buildRespField();
+    this.reloadNode = this.buildReloadNode(board, thread_id);
+    this.helpNode = this.buildHelpNode();
+    this.msgNode = this.buildMsgNode();
+    this.challengeNode = this.buildChallengeNode();
+    
+    el.appendChild(this.reloadNode);
+    el.appendChild(this.respNode);
+    el.appendChild(this.helpNode);
+    
+    this.imgCntNode.appendChild(this.bgNode);
+    this.imgCntNode.appendChild(this.fgNode);
+    el.appendChild(this.imgCntNode);
+    
+    el.appendChild(this.sliderNode);
+    el.appendChild(this.msgNode);
+    el.appendChild(this.challengeNode);
+    
+    window.addEventListener('message', this.onFrameMessage);
+  },
+  
+  destroy: function() {
+    let self = TCaptcha;
+    
+    if (!self.node) {
+      return;
+    }
+    
+    window.removeEventListener('message', self.onFrameMessage);
+    
+    clearTimeout(self.frameTimeout);
+    clearTimeout(self.reloadTimeout);
+    clearTimeout(self.expireTimeout);
+    
+    self.node.textContent = '';
+    
+    self.node = null;
+    self.frameNode = null;
+    self.imgCntNode = null;
+    self.bgNode = null;
+    self.fgNode = null;
+    self.msgNode = null;
+    self.sliderNode = null;
+    self.respNode = null;
+    self.reloadNode = null;
+    self.helpNode = null;
+    self.challengeNode = null;
+    
+    self.challenge = null;
+    
+    self.errorCb = null;
+    
+    self.domain = null;
+    
+    self.reloadTs = null;
+  },
+  
+  setErrorCb: function(func) {
+    TCaptcha.errorCb = func;
+  },
+  
+  toggleImgCntNode: function(flag) {
+    TCaptcha.imgCntNode.style.display = flag ? 'block' : 'none';
+  },
+  
+  buildFrameNode: function() {
+    let el = document.createElement('iframe');
+    el.id = 't-frame';
+    el.style.border = '0';
+    el.style.width = '100%';
+    el.style.height = '80px';
+    el.style.marginTop = '2px';
+    el.style.position = 'relative';
+    el.style.display = 'block';
+    el.onerror = TCaptcha.onFrameError;
+    return el;
+  },
+  
+  buildImgCntNode: function() {
+    let el = document.createElement('div');
+    el.id = 't-cnt';
+    el.style.height = '80px';
+    el.style.marginTop = '2px';
+    el.style.position = 'relative';
+    return el;
+  },
+  
+  buildImgNode: function(id) {
+    let el = document.createElement('div');
+    el.id = 't-' + id;
+    el.style.width = '100%';
+    el.style.height = '100%';
+    el.style.position = 'absolute';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.backgroundPosition = 'top left';
+    return el;
+  },
+  
+  buildMsgNode: function() {
+    let el = document.createElement('div');
+    el.id = 't-msg';
+    el.style.width = '100%';
+    el.style.position = 'absolute';
+    el.style.top = '50%';
+    el.style.textAlign = 'center';
+    el.style.fontSize = '14px';
+    el.style.filter = 'inherit';
+    el.style.display = 'none';
+    return el;
+  },
+  
+  buildRespField: function() {
+    let el = document.createElement('input');
+    el.id = 't-resp';
+    el.name = 't-response';
+    el.placeholder = 'Type the CAPTCHA here';
+    el.setAttribute('autocomplete', 'off');
+    el.type = 'text';
+    el.style.width = '160px';
+    el.style.boxSizing = 'border-box';
+    el.style.textTransform = 'uppercase';
+    el.style.fontSize = '11px';
+    el.style.height = '18px';
+    el.style.margin = '0';
+    el.style.padding = '0 2px';
+    el.style.fontFamily = 'monospace';
+    el.style.verticalAlign = 'middle';
+    return el;
+  },
+  
+  buildSliderNode: function() {
+    let el = document.createElement('input');
+    el.id = 't-slider';
+    el.setAttribute('autocomplete', 'off');
+    el.type = 'range';
+    el.style.width = '100%';
+    el.style.boxSizing = 'border-box';
+    el.style.visibility = 'hidden';
+    el.style.margin = '0';
+    el.style.transition = 'box-shadow 10s ease-out';
+    el.style.boxShadow = '0 0 4px 2px #1d8dc4';
+    el.style.position = 'relative';
+    el.value = 0;
+    el.min = 0;
+    el.max = 100;
+    el.addEventListener('input', this.onSliderInput, false);
+    return el;
+  },
+  
+  buildChallengeNode: function() {
+    let el = document.createElement('input');
+    el.name = 't-challenge';
+    el.type = 'hidden';
+    return el;
+  },
+  
+  buildReloadNode: function(board, thread_id) {
+    let el = document.createElement('button');
+    el.id = 't-load';
+    el.type = 'button';
+    el.style.fontSize = '11px';
+    el.style.padding = '0';
+    el.style.width = '90px';
+    el.style.boxSizing = 'border-box';
+    el.style.margin = '0 6px 0 0';
+    el.style.verticalAlign = 'middle';
+    el.style.height = '18px';
+    el.textContent = 'Get Captcha';
+    el.setAttribute('data-board', board);
+    el.setAttribute('data-tid', thread_id);
+    el.addEventListener('click', this.onReloadClick, false);
+    return el;
+  },
+  
+  buildHelpNode: function() {
+    let el = document.createElement('button');
+    el.id = 't-help';
+    el.type = 'button';
+    el.style.fontSize = '11px';
+    el.style.padding = '0';
+    el.style.width = '20px';
+    el.style.boxSizing = 'border-box';
+    el.style.margin = '0 0 0 6px';
+    el.style.verticalAlign = 'middle';
+    el.style.height = '18px';
+    el.textContent = '?';
+    el.setAttribute('data-tip', 'Help');
+    el.tabIndex = -1;
+    el.addEventListener('click', this.onHelpClick, false);
+    return el;
+  },
+  
+  onHelpClick: function() {
+    let str = `- Only type letters and numbers displayed in the image.
+- If needed, use the slider to align the image to make it readable.
+- Make sure to not block any cookies set by 4chan.`;
+    alert(str);
+  },
+  
+  onReloadClick: function() {
+    let board = this.getAttribute('data-board');
+    let thread_id = this.getAttribute('data-tid');
+    TCaptcha.toggleReloadBtn(false, 'Loading');
+    TCaptcha.load(board, thread_id);
+  },
+  
+  onFrameMessage: function(e) {
+    if (e.origin !== `https://sys.${TCaptcha.domain}`) {
+      return;
+    }
+    
+    if (e.data && e.data.twister) {
+      TCaptcha.destroyFrame();
+      TCaptcha.buildFromJson(e.data.twister);
+    }
+  },
+  
+  load: function(board, thread_id) {
+    let self = TCaptcha;
+    
+    clearTimeout(self.frameTimeout);
+    clearTimeout(self.reloadTimeout);
+    clearTimeout(self.expireTimeout);
+    
+    let params = ['framed=1'];
+    
+    if (board) {
+      params.push('board=' + board);
+    }
+    
+    if (thread_id > 0) {
+      params.push('thread_id=' + thread_id);
+    }
+    
+    if (params.length > 0) {
+      params = '?' + params.join('&');
+    }
+    
+    let src = 'https://sys.' + self.domain + self.path + params;
+    
+    self.frameNode = self.buildFrameNode();
+    self.toggleImgCntNode(false);
+    self.node.insertBefore(self.frameNode, self.imgCntNode);
+    self.frameTimeout = setTimeout(self.onFrameTimeout, 30000, src);
+    self.frameNode.src = src;
+  },
+  
+  onFrameTimeout: function(src) {
+    TCaptcha.destroyFrame();
+    
+    console.log('Captcha frame timeout');
+    
+    if (TCaptcha.errorCb) {
+      TCaptcha.errorCb.call(null, `Couldn't get the captcha.
+Make sure your browser doesn't block cookies then click
+<a href="javascript:void(0);" onclick="window.open('${src.replace('framed=1', 'opened=1')}',
+'_blank', 'width=400,height=200')">here</a>.`);
+    }
+  },
+  
+  destroyFrame: function() {
+    let self = TCaptcha;
+    
+    clearTimeout(self.frameTimeout);
+    self.frameTimeout = null;
+    if (self.frameNode) {
+      self.frameNode.remove();
+      self.frameNode = null;
+    }
+    self.toggleImgCntNode(true);
+    self.unlockReloadBtn();
+  },
+  
+  unlockReloadBtn: function() {
+    TCaptcha.reloadTs = null;
+    TCaptcha.toggleReloadBtn(true, 'Get Captcha');
+  },
+  
+  toggleReloadBtn: function(flag, label) {
+    let self = TCaptcha;
+    
+    if (self.reloadNode) {
+      self.reloadNode.disabled = !flag;
+      
+      if (label !== undefined) {
+        self.reloadNode.textContent = label;
+      }
+    }
+  },
+  
+  setReloadCd: function(cd, visible) {
+    let self = TCaptcha;
+    
+    if (!self.node) {
+      return;
+    }
+    
+    clearTimeout(self.reloadTimeout);
+    
+    if (cd) {
+      self.toggleReloadBtn(false);
+      if (visible) {
+        self.reloadTs = Date.now() + cd;
+        self.onReloadCdTick();
+      }
+      else {
+        self.reloadTimeout = setTimeout(self.toggleReloadBtn, cd, true);
+      }
+    }
+    else {
+      self.toggleReloadBtn(true);
+    }
+  },
+  
+  onReloadCdTick: function() {
+    let self = TCaptcha;
+    
+    if (!self.reloadNode || !self.reloadTs) {
+      return;
+    }
+    
+    let cd = self.reloadTs - Date.now();
+    
+    if (cd > 0) {
+      self.reloadNode.textContent = Math.ceil(cd / 1000);
+      self.reloadTimeout = setTimeout(self.onReloadCdTick, Math.min(cd, 1000));
+    }
+    else {
+      self.unlockReloadBtn();
+    }
+  },
+  
+  clearChallenge: function() {
+    let self = TCaptcha;
+    
+    if (self.node) {
+      self.challengeNode.value = '';
+      self.respNode.value = '';
+      self.fgNode.style.backgroundImage = '';
+      self.bgNode.style.backgroundImage = '';
+      self.toggleSlider(false);
+      self.toggleMsgOverlay(false);
+    }
+  },
+  
+  toggleSlider: function(flag) {
+    TCaptcha.sliderNode.style.visibility = flag ? '' : 'hidden';
+    TCaptcha.sliderNode.style.boxShadow = flag ? '' : '0 0 4px 2px #1d8dc4';
+  },
+  
+  toggleMsgOverlay: function(flag, txt) {
+    if (txt !== undefined) {
+      TCaptcha.msgNode.textContent = txt;
+    }
+    TCaptcha.msgNode.style.display = flag ? 'block' : 'none';
+  },
+  
+  onSliderInput: function() {
+    var m = -Math.floor((+this.value) / 100 * this.twisterDelta);
+    TCaptcha.bgNode.style.backgroundPositionX = m + 'px';
+  },
+  
+  buildFromJson: function(data) {
+    let self = TCaptcha;
+    
+    if (!self.node) {
+      return;
+    }
+    
+    self.unlockReloadBtn();
+    self.toggleSlider(false);
+    self.toggleMsgOverlay(false);
+    
+    if (TCaptcha.errorCb) {
+      TCaptcha.errorCb.call(null, '');
+    }
+    
+    if (data.cd) {
+      self.setReloadCd(data.cd * 1000, !data.challenge);
+    }
+    
+    if (data.error) {
+      console.log(data.error);
+      
+      if (TCaptcha.errorCb) {
+        TCaptcha.errorCb.call(null, data.error);
+      }
+      
+      return;
+    }
+    
+    self.imgCntNode.style.width = data.img_width + 'px';
+    self.imgCntNode.style.height = data.img_height + 'px';
+    
+    self.challengeNode.value = data.challenge;
+    
+    self.expireTimeout = setTimeout(self.clearChallenge, data.ttl * 1000 - 3000);
+    
+    if (data.bg_width) {
+      self.buildTwister(data);
+    }
+    else if (data.img) {
+      self.buildStatic(data);
+    }
+    else {
+      self.buildNoop(data);
+    }
+  },
+  
+  buildTwister: function(data) {
+    let self = TCaptcha;
+    
+    self.fgNode.style.backgroundImage = 'url(data:image/png;base64,' + data.img + ')';
+    self.bgNode.style.backgroundImage = 'url(data:image/png;base64,' + data.bg + ')';
+    
+    self.bgNode.style.backgroundPositionX = '0px';
+    
+    self.toggleSlider(true);
+    self.sliderNode.value = 0;
+    self.sliderNode.twisterDelta = data.bg_width - data.img_width;
+    self.sliderNode.focus();
+  },
+  
+  buildStatic: function(data) {
+    let self = TCaptcha;
+    self.fgNode.style.backgroundImage = 'url(data:image/png;base64,' + data.img + ')';
+    self.bgNode.style.backgroundImage = '';
+  },
+  
+  buildNoop: function(data) {
+    let self = TCaptcha;
+    self.toggleMsgOverlay(true, 'Verification not required.');
+    self.fgNode.style.backgroundImage = '';
+    self.bgNode.style.backgroundImage = '';
+  }
+};
+
+/**
  * Tooltips
  */
 var Tip = {
@@ -100,7 +589,7 @@ var Tip = {
       Tip.node = null;
     }
   }
-}
+};
 
 /**
  * Settings Syncher
@@ -121,7 +610,7 @@ var StorageSync = {
       + (location.host === 'boards.4channel.org' ? '4chan' : '4channel')
       + '.org';
     
-    window.addEventListener('message', self.onMessage, false);
+    window.addEventListener('message', self.onFrameMessage, false);
     
     el = document.createElement('iframe');
     el.width = 0;
@@ -136,7 +625,7 @@ var StorageSync = {
     self.inited = true;
   },
   
-  onMessage: function(e) {
+  onFrameMessage: function(e) {
     var self = StorageSync;
     
     if (e.origin !== self.remoteOrigin) {
@@ -151,6 +640,16 @@ var StorageSync = {
       }
       
       return;
+    }
+  },
+  
+  onFrameError: function(e) {
+    TCaptcha.unlockReloadBtn();
+    
+    console.log(e);
+    
+    if (TCaptcha.errorCb) {
+      TCaptcha.errorCb.call(null, `${e.type}: ${e.message}`);
     }
   },
   
@@ -210,9 +709,7 @@ function mShowFull(t) {
 }
 
 function loadBannerImage() {
-  var cnt, el;
-  
-  cnt = document.getElementById('bannerCnt');
+  var cnt = document.getElementById('bannerCnt');
   
   if (!cnt || cnt.offsetWidth <= 0) {
     return;
@@ -232,7 +729,7 @@ function onMobileSelectChange() {
 }
 
 function buildMobileNav() {
-  var el, cnt, boards, i, b, html, order;
+  var el, boards, i, b, html, order;
   
   if (el = document.getElementById('boardSelectMobile')) {
     html = '';
@@ -379,6 +876,26 @@ function initRecaptcha() {
   }
 }
 
+function initTCaptcha() {
+  let el = document.getElementById('t-root');
+  
+  if (el) {
+    let board = location.pathname.split(/\//)[1];
+    
+    let thread_id;
+    
+    if (document.forms.post && document.forms.post.resto) {
+      thread_id = +document.forms.post.resto.value;
+    }
+    else {
+      thread_id = 0;
+    }
+    
+    TCaptcha.init(el, board, thread_id);
+    TCaptcha.setErrorCb(window.showPostFormError);
+  }
+}
+
 function initAnalytics() {
   var tid = location.host.indexOf('.4channel.org') !== -1 ? 'UA-166538-5' : 'UA-166538-1';
   
@@ -389,148 +906,40 @@ function initAnalytics() {
   ga('send','pageview');
 }
 
-function initAds(category, board) {
-  var p = "http", d = "s", el;
+function initAdsPF(cnt, slot_id) {
+  let sid, nid;
   
-  if (document.location.protocol == "https:") {
-    p += "s";
+  if (slot_id == 1) {
+    sid = '63fe2daee452af0027734a72';
+    nid = 'pf-3738-1';
   }
-  
-  var z = document.createElement("script");
-  z.type = "text/javascript";
-  z.async = true;
-  z.src = p + "://" + d + ".zkcdn.net/ados.js";
-  z.onload = function() {
-    ados = ados || {};
-    ados.run = ados.run || [];
-    ados.run.push(function () {
-      if (!(el = document.getElementById('azk91603'))) {
-        return;
-      }
-      if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches && localStorage.getItem('4chan_never_show_mobile') != 'true') {
-        el.id = 'azk92421';
-        window._top_ad = ados_add_placement(3536, 18130, "azk92421", 5).setZone(162389);
-      }
-      else {
-        window._top_ad = ados_add_placement(3536, 18130, "azk91603", 4).setZone(16258);
-      }
-      ados_setPassbackTimeout(3000);
-      ados_setDomain('engine.4chan-ads.org');
-      ados_setKeywords(category + ', ' + board + (window.thread_archived ? ',archive' : ''));
-      ados_setNoTrack();
-      ados_load();
-    });
-  };
-  
-  var s = document.getElementsByTagName("script")[0];
-  s.parentNode.insertBefore(z, s);
-}
-
-function initAdsAT() {
-  var i, s, el, nodes;
-  
-  if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches) {
+  else if (slot_id == 2) {
+    sid = '63fe559b1cfcf200287c0f78';
+    nid = 'pf-3739-1';
+  }
+  else if (slot_id == 3) {
+    sid = '63fe2d9799195d002722d70d';
+    nid = 'pf-3737-1';
+  }
+  else if (slot_id == 4) {
+    sid = '63fe55ae667fae00280cbfbc';
+    nid = 'pf-3740-1';
+  }
+  else {
     return;
   }
   
-  nodes = document.getElementsByClassName('adt-800');
+  cnt.innerHTML = '';
   
-  for (i = 0; el = nodes[i]; ++i) {
-    s = document.createElement('script');
-    s.src = '//' + el.getAttribute('data-d') + '/' + el.id.replace('container-', '') + '/invoke.js';
-    document.body.appendChild(s);
-  }
+  let d = document.createElement('div');
+  d.id = nid;
+  cnt.appendChild(d);
+  
+  window.pubfuturetag = window.pubfuturetag || [];
+  window.pubfuturetag.push({unit: sid, id: nid});
 }
 
-function initAdsBG() {
-  var i, s, el, div, nodes, m, idx;
-  
-  nodes = document.getElementsByClassName('adc-resp-bg');
-  
-  if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches) {
-    idx = 4;
-  }
-  else {
-    idx = 0;
-  }
-  
-  for (i = 0; el = nodes[i]; ++i) {
-    m = el.getAttribute('data-ad-bg').split(',').slice(idx);
-    
-    if (m[0] === '0') {
-      el.style.display = 'none';
-      continue;
-    }
-    
-    div = document.createElement('div');
-    div.id = 'bg_' + m[0] + m[1] + m[2];
-    el.appendChild(div);
-    
-    s = document.createElement('script');
-    s.setAttribute('async', '');
-    s.src = '//platform.bidgear.com/async.php?domainid=' + m[0] + '&sizeid=' + m[1] + '&zoneid=' + m[2] + '&k=' + Date.now();
-    document.body.appendChild(s);
-  }
-}
-
-function initAdsLD() {
-  var i, j, p, el, div, nodes, m, idx;
-  
-  window.ldAdInit = window.ldAdInit || [];
-  
-  nodes = document.getElementsByClassName('adc-ld');
-  
-  if (!nodes[0]) {
-    return;
-  }
-  
-  if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches) {
-    idx = 1;
-  }
-  else {
-    idx = 0;
-  }
-  
-  for (i = 0; el = nodes[i]; ++i) {
-    m = el.getAttribute('data-ld').split(',').slice(idx);
-    window.ldAdInit.push({ slot: m, size: [0, 0], id: el.getAttribute('data-ld-id') });
-  }
-  
-  if (!document.getElementById('ld-ajs')) {
-    j = document.createElement('script');
-    p = document.getElementsByTagName('script')[0];
-    j.async = true;
-    j.src = '//cdn2.lockerdomecdn.com/_js/ajs.js';
-    j.id = 'ld-ajs';
-    p.parentNode.insertBefore(j, p);
-  }
-}
-
-function initAdsBGLS() {
-  var i, s, el, m;
-  
-  m = window.matchMedia && window.matchMedia('(max-width: 480px)').matches;
-  
-  nodes = document.getElementsByClassName('ad-bgls');
-  
-  for (i = 0; el = nodes[i]; ++i) {
-    if (m) {
-      if (!el.hasAttribute('data-m')) {
-        continue;
-      }
-    }
-    else if (el.hasAttribute('data-m')) {
-      continue;
-    }
-    
-    s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://bid.glass/unit/' + el.getAttribute('data-u') + '.js';
-    document.head.appendChild(s);
-  }
-}
-
-function initAdsAG() {
+function initAdsADT(scope) {
   var el, nodes, i, cls, s;
   
   if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches && localStorage.getItem('4chan_never_show_mobile') != 'true') {
@@ -540,33 +949,10 @@ function initAdsAG() {
     cls = 'adg';
   }
   
-  nodes = document.getElementsByClassName(cls);
+  nodes = (scope || document).getElementsByClassName(cls);
   
   for (i = 0; el = nodes[i]; ++i) {
-    if (el.hasAttribute('data-rc')) {
-      s = document.createElement('script');
-      s.text = '(function(){var referer="";try{if(referer=document.referrer,"undefined"==typeof referer||""==referer)throw"undefined";}catch(exception){referer=document.location.href,(""==referer||"undefined"==typeof referer)&&(referer=document.URL)}referer=referer.substr(0,700);var rcds=document.getElementById("' + el.id + '");var rcel=document.createElement("script");rcel.id="rc_"+Math.floor(Math.random()*1E3);rcel.type="text/javascript";rcel.src="//trends.revcontent.com/serve.js.php?w=' + el.getAttribute('data-rc') + '&t="+rcel.id+"&c="+(new Date).getTime()+"&width="+(window.outerWidth||document.documentElement.clientWidth)+"&referer="+encodeURIComponent(referer);rcel.async=true;rcds.appendChild(rcel)})();';
-      document.body.appendChild(s);
-    }
-    else if (el.hasAttribute('data-ja')) {
-      s = document.createElement('iframe');
-      s.setAttribute('scrolling', 'no');
-      s.setAttribute('border', '0');
-      s.setAttribute('frameborder', '0');
-      s.setAttribute('allowtransparency', 'true');
-      s.setAttribute('marginheight', '0');
-      s.setAttribute('marginwidth', '0');
-      s.setAttribute('width', el.getAttribute('data-adw') || '728');
-      s.setAttribute('height', el.getAttribute('data-adh') || '102');
-      s.src = '//adserver.juicyads.com/adshow.php?adzone=' + el.getAttribute('data-ja');
-      el.appendChild(s);
-    }
-    else if (el.hasAttribute('data-adn')) {
-      s = document.createElement('script');
-      s.text = '(function(parentNode){var adnOpt={"id":' + el.id.replace('adn-', '') + ',"pid":6099,"sid":1291218,"type":6,"width":300,"height":250};var adn=document.createElement("script");adn.type="text/javascript";adn.async=true;adn.src="//a.adnium.com/static?r="+Math.floor(Math.random()*99999999)+"&id="+adnOpt.id+"&pid="+adnOpt.pid+"&sid="+adnOpt.sid+"&tid="+adnOpt.type+"&w="+adnOpt.width+"&h="+adnOpt.height;parentNode.appendChild(adn)})(document.getElementsByTagName("script")[document.getElementsByTagName("script").length-1].parentNode);';
-      document.body.appendChild(s);
-    }
-    else if (el.hasAttribute('data-abc')) {
+    if (el.hasAttribute('data-abc')) {
       s = document.createElement('iframe');
       s.setAttribute('scrolling', 'no');
       s.setAttribute('frameborder', '0');
@@ -587,12 +973,177 @@ function initAdsAG() {
       s.src = 'https://a.adtng.com/get/' + el.getAttribute('data-abc') + '?time=' + Date.now();
       el.appendChild(s);
     }
+  }
+}
+
+function initAdsDanbo() {
+  if (!window.Danbo) {
+    return;
+  }
+  
+  let pubid = 27;
+  
+  let b = location.pathname.split(/\//)[1] || '_';
+  
+  let nodes = document.getElementsByClassName('danbo-slot');
+  
+  let m = window.matchMedia && window.matchMedia('(max-width: 480px)').matches;
+  
+  for (let cnt of nodes) {
+    let s = cnt.id === 'danbo-s-t';
+    
+    let el = document.createElement('div');
+    el.className = 'danbo_dta';
+    
+    if (m) {
+      if (s) {
+        s = '3';
+      }
+      else {
+        s = '4';
+      }
+      el.setAttribute('data-danbo', `${pubid}-${b}-${s}-300-250`);
+      el.classList.add('danbo-m');
+    }
     else {
-      s = document.createElement('script');
-      s.src = '//community4chan.engine.adglare.net/?' + el.id.replace('zone', '');
-      document.body.appendChild(s);
+      if (s) {
+        s = '1';
+      }
+      else {
+        s = '2';
+      }
+      el.setAttribute('data-danbo', `${pubid}-${b}-${s}-728-90`);
+      el.classList.add('danbo-d');
+    }
+    
+    cnt.appendChild(el);
+  }
+  
+  window.addEventListener('message', function(e) {
+    if (e.origin === 'https://hakurei.danbo.org' && e.data && e.data.origin === 'danbo') {
+      window.initAdsFallback(e.data.unit_id);
+    }
+  });
+  
+  window.Danbo.initialize();
+}
+
+function initAdsFallback(slot_id) {
+  let fb = window.danbo_fb;
+  
+  let cnt_id;
+  
+  if (slot_id == 1 || slot_id == 3) {
+    cnt_id = 'danbo-s-t';
+  }
+  else {
+    cnt_id = 'danbo-s-b';
+  }
+  
+  let cnt = document.getElementById(cnt_id);
+  
+  if (!cnt) {
+    return;
+  }
+  
+  let is_burichan = location.host.indexOf('4channel') !== -1;
+  
+  let hr = is_burichan ? 0.1 : 0.01;
+  
+  if (Math.random() < hr) {
+    return initAdsHome(cnt);
+  }
+  
+  if (cnt_id === 'danbo-s-t') {
+    if (is_burichan) {
+      initAdsPF(cnt, slot_id);
+    }
+    else if (fb) {
+      if (slot_id == 1 && fb.t_abc_d) {
+        cnt.innerHTML = `<div class="adg-rects desktop"><div class="adg adp-90" data-abc="${fb.t_abc_d}"></div></div>`;
+        initAdsADT(cnt);
+      }
+      else if (slot_id == 3 && fb.t_abc_m) {
+        cnt.innerHTML = `<div class="adg-rects mobile"><div class="adg-m adp-250" data-abc="${fb.t_abc_m}"></div></div>`;
+        initAdsADT(cnt);
+      }
+      else {
+        initAdsHome(cnt);
+      }
+    }
+    else {
+      initAdsHome(cnt);
     }
   }
+  else if (cnt_id === 'danbo-s-b') {
+    if (is_burichan) {
+      initAdsPF(cnt, slot_id);
+    }
+    else if (fb) {
+      if (slot_id == 4 && fb.b_abc_m) {
+        cnt.innerHTML = `<div class="adg-rects mobile"><div class="adg-m adp-250" data-abc="${fb.b_abc_m}"></div></div>`;
+        initAdsADT(cnt);
+      }
+      else {
+        initAdsHome(cnt);
+      }
+    }
+    else {
+      initAdsHome(cnt);
+    }
+  }
+  else {
+    console.log('Fallback', slot_id);
+  }
+}
+
+function initAdsHome(cnt) {
+  let banners = [
+    ['advertise', '1.png', '2.png', '3.png'],
+    ['pass', '4.png', '5.png'],
+  ];
+  
+  let banners_m = [
+    ['advertise', '1m.png'],
+  ];
+  
+  let d;
+  
+  if (location.host.indexOf('4channel')) {
+    d = '4channel';
+  }
+  else {
+    d = '4chan';
+  }
+  
+  let b;
+  
+  if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches) {
+    b = banners_m;
+  }
+  else {
+    b = banners;
+  }
+  
+  b = b[Math.floor(Math.random() * b.length)];
+  
+  let href = b[0];
+  let src = b[1 + Math.floor(Math.random() * (b.length - 1))];
+  
+  let a = document.createElement('a');
+  a.href = `https://www.${d}.org/${href}`;
+  a.target = '_blank';
+  
+  let img = document.createElement('img');
+  img.src = '//s.4cdn.org/image/banners/' + src;
+  
+  a.appendChild(img);
+  
+  if (cnt.children.length) {
+    cnt.innerHTML = '';
+  }
+  
+  cnt.appendChild(a);
 }
 
 function applySearch(e) {
@@ -681,7 +1232,7 @@ function repquote(rep) {
 }
 
 function reppop(url) {
-  var height, altc;
+  var height;
   
   if (window.passEnabled || !window.grecaptcha) {
     height = 205;
@@ -723,7 +1274,7 @@ function onParsingDone(e) {
         p = n.parentNode.parentNode.parentNode;
         p.className = 'highlight ' + p.className;
       }
-      n.addEventListener('click', idClick, false)
+      n.addEventListener('click', idClick, false);
     }
   }
 }
@@ -760,6 +1311,7 @@ function toggleMobilePostForm(index, scrolltotop) {
     postForm.className = postForm.className.replace(' hideMobile', '');
     elem.innerHTML = 'Close Post Form';
     initRecaptcha();
+    initTCaptcha();
   }
   else {
     elem.className = elem.className.replace('shown', 'hidden');
@@ -942,7 +1494,7 @@ TeX: { Macros: { color: '{}', newcommand: '{}', renewcommand: '{}', newenvironme
 
 captchainterval = null;
 function init() {
-  var el;
+  var el, i;
   var error = typeof is_error != "undefined";
   var board = location.href.match(/(?:4chan|4channel)\.org\/(\w+)/)[1];
   var arr = location.href.split(/#/);
@@ -960,7 +1512,7 @@ function init() {
       links = document.querySelectorAll('s');
       len = links.length;
 
-      for( var i = 0; i < len; i++ ) {
+      for(i = 0; i < len; i++ ) {
         links[i].onclick = function() {
           if (this.hasAttribute('style')) {
             this.removeAttribute('style');
@@ -968,7 +1520,7 @@ function init() {
           else {
             this.setAttribute('style', 'color: #fff!important;');
           }
-        }
+        };
       }
     }
   }
@@ -976,7 +1528,7 @@ function init() {
   if( document.getElementById('styleSelector') ) {
         styleSelect = document.getElementById('styleSelector');
         len = styleSelect.options.length;
-        for ( var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             if (styleSelect.options[i].value == activeStyleSheet) {
                 styleSelect.selectedIndex = i;
                 continue;
@@ -1212,13 +1764,24 @@ function getPreferredStyleSheet() {
 }
 
 function createCookie(name, value, days, domain) {
+  let expires;
+  
   if (days) {
     var date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    var expires = "; expires=" + date.toGMTString();
-  } else expires = "";
-  if (domain) domain = "; domain=" + domain;
-  else domain = "";
+    expires = "; expires=" + date.toGMTString();
+  }
+  else {
+    expires = '';
+  }
+  
+  if (domain) {
+    domain = "; domain=" + domain;
+  }
+  else {
+    domain = '';
+  }
+  
   document.cookie = name + "=" + value + expires + "; path=/" + domain;
 }
 
@@ -1265,6 +1828,7 @@ function showPostForm(e) {
     $.id('togglePostFormLink').style.display = 'none';
     el.style.display = 'table';
     initRecaptcha();
+    initTCaptcha();
   }
 }
 
@@ -1388,7 +1952,7 @@ var PainterCore = {
   },
   
   onDone: function() {
-    var self, blob, el;
+    var self, el;
     
     self = PainterCore;
     
@@ -1437,7 +2001,7 @@ var PainterCore = {
     
     self.btnDraw.textContent = 'Draw';
     
-    for (el of self.inputNodes) {
+    for (var el of self.inputNodes) {
       el.disabled = false;
     }
     
@@ -1521,15 +2085,9 @@ function contentLoaded() {
   
   document.removeEventListener('DOMContentLoaded', contentLoaded, true);
   
-  initAdsAG();
+  initAdsADT();
   
-  initAdsAT();
-  
-  initAdsBG();
-  
-  initAdsLD();
-  
-  initAdsBGLS();
+  initAdsDanbo();
   
   if (document.post) {
     document.post.name.value = get_cookie("4chan_name");

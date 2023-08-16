@@ -14,6 +14,22 @@
 <link rel="apple-touch-icon" sizes="114x114" href="//s.4cdn.org/image/apple-touch-icon-iphone-retina.png" />
 <link rel="apple-touch-icon" sizes="144x144" href="//s.4cdn.org/image/apple-touch-icon-ipad-retina.png" />
 <link rel="stylesheet" type="text/css" href="//s.4cdn.org/css/pass.10.css" />
+<script>var danbo_rating = '__SFW__', danbo_page = 'homews';</script>
+<script src="https://static.danbo.org/publisher/q2g345hq2g534-4chan/js/preload.4chan.js" defer></script>
+<style type="text/css">
+.danbo-slot {
+ width:728px;
+ height:90px;
+ margin:10px auto;
+ overflow:hidden
+}
+@media only screen and (max-width:480px) {
+ .danbo-slot {
+  width:300px;
+  height:250px
+ }
+}
+</style>
 <script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 var tid = /(^|\.)4channel.org$/.test(location.host) ? 'UA-166538-5' : 'UA-166538-1';
 ga('create', tid, {'sampleRate': 1});
@@ -595,7 +611,7 @@ per month&mdash;or less than a single 20oz bottle of soda.</p>
 here if you've already purchased a 4chan Pass.</a></p>
 <p>Forgot your PIN? <a href="https://www.4channel.org/pass?reset">Reset it here.</a></p>
 <p>If your Pass has expired or is expiring in less than 6 months, you can <a href="https://www.4channel.org/pass?req_renew">renew it here.</a></p>
-<p>If you have trouble purchasing a 4chan Pass, please e-mail <a href="mailto:4chanpass@4chan.org">4chanpass@4chan.org</a></p>
+<p>If you have trouble purchasing a 4chan Pass, or do not receive a confirmation email within 24 hours, please e-mail <a href="mailto:4chanpass@4chan.org">4chanpass@4chan.org</a></p>
 <hr style="border: 0; color: #800; background: #800; height: 1px; margin-top: 1.0em; margin-bottom: 1.0em;" />
 
 </div>
@@ -630,30 +646,30 @@ Purchase this Pass as a gift for someone else?
 <div class="form-row email-row" id="gift_email" style="display: none;">
 <div class="left-column">
 <h3>Gift Recipient E-mail</h3>
-<input type="text" size="17" autocomplete="off" name="giftemail" id="giftemail" title="E-mail for the gift recipient." value="" />
+<input type="text" size="17" autocomplete="off" name="giftemail" id="giftemail" title="E-mail for the gift recipient." value />
 </div>
 <div class="right-column">
 <h3>Verify Gift Recipient E-mail</h3>
-<input type="text" size="17" autocomplete="off" id="giftemailverify" name="giftemailverify" title="Verify gift recipient's e-mail address." value="" />
+<input type="text" size="17" autocomplete="off" id="giftemailverify" name="giftemailverify" title="Verify gift recipient's e-mail address." value />
 </div>
 </div>
-<hr />
+<hr/>
 <div class="form-row" style="text-align: center;" id="priceinfo">
 <h3>Cost</h3>
 <h2 style="padding-top: 5px;">$20.00 USD</h2>
 
 </div>
-<hr />
+<hr/>
 <div class="form-row" style="text-align: center;">
 <input type="checkbox" autocomplete="off" name="acceptterms" id="acceptterms" value="accept" onclick="buttonClick(this);" />&nbsp;
 <label for="acceptterms">
-I have read and agree to the <br /><a href="#termsofsale">Terms of Sale</a> and <a href="#termsofuse">Terms
+I have read and agree to the <br/><a href="#termsofsale">Terms of Sale</a> and <a href="#termsofuse">Terms
 of Use</a>.
 </label>
 <br><br>
 <input type="hidden" name="temp_id" value="snip">
 <button type="button" class="submit-button-cg stripe-button-el" disabled="disabled" id="pbac-button"><span>Pay with Digital Currency</span></button>
-<div style="margin-top: 10px">We currently accept<br>Bitcoin, Bitcoin Cash, Ethereum and Litecoin.</div>
+<div style="margin-top: 10px">We currently accept<br>Bitcoin, Bitcoin Cash, Dai, Dogecoin, Ethereum, Litecoin, and USDC.<br>Please note that Coinbase does not support the Binance Chain or Binance Smart Chain. Do not attempt payment with BEP-2 or BEP20 tokens.</div>
 <script type="text/javascript">
       function appendToken(res) {
         var el, form;
@@ -784,7 +800,7 @@ of Use</a>.
       var el = document.getElementById('pbpp-button');
       el && el.addEventListener('click', onPayPalClick, false);
     </script>
-<br /><br />
+<br/><br/>
 <div style="text-align: center; font-size: smaller;">Note: You must have JavaScript and browser cookies
 enabled in order to complete this purchase. Please provide a valid e-mail address, as you may have trouble receiving your Pass credentials if you fail to do so.
 </div>
@@ -894,16 +910,16 @@ Note this is done automatically on devices that have already been authorized and
 </dd>
 <dt id="paymentsecure">Do you store payment information on your servers?</dt>
 <dd>
-<p>No. All payment information is stored securely by our <a href="//en.wikipedia.org/wiki/Payment_Card_Industry_Data_Security_Standard">PCI</a>-certified payment provider. More information is
-available <a href="https://www.paypal.com/us/webapps/mpp/paypal-safety-and-security" target="_blank">here</a>.</p>
+<p>No. All payment information is stored securely by our <a href="//en.wikipedia.org/wiki/Payment_Card_Industry_Data_Security_Standard">PCI</a>-certified payment provider.</p>
 </dd>
 <dt id="paymentmethods">What payment methods do you accept?</dt>
 <dd>
-<p>We accept Bitcoin, Bitcoin Cash, Ethereum and Litecoin.</p>
+<p>We accept Bitcoin, Bitcoin Cash, Dai, Dogecoin, Ethereum, Litecoin, and USDC. Unfortunately we cannot accept Credit Cards at this time.</p>
+<p>Cryptocurrency can be purchased on Coinbase or, for US residents, on Cash App.</p>
 </dd>
 <dt id="countryban">I can't post because my ISP, IP range, or country is blocked&mdash;can I use a 4chan Pass?</dt>
 <dd>
-<p>Yes. 4chan Pass users may bypass ISP, IP range, and country blocks, but are still subject to the same rules and restrictions as any other user. Pass users cannot bypass individual (regular) IP bans.<br /><br />Don't know the difference? <em>ISP, IP range, and country blocks</em> display red "Error" messages when attempting to post (these <u>can</u> be bypassed with a 4chan Pass), whereas <em>individual IP bans</em> redirect you to www.4channel.org/banned (these <u>cannot</u> be bypassed with a 4chan Pass).</p>
+<p>Yes. 4chan Pass users may bypass ISP, IP range, and country blocks, but are still subject to the same rules and restrictions as any other user. Pass users cannot bypass individual (regular) IP bans.<br/><br/>Don't know the difference? <em>ISP, IP range, and country blocks</em> display red "Error" messages when attempting to post (these <u>can</u> be bypassed with a 4chan Pass), whereas <em>individual IP bans</em> redirect you to www.4channel.org/banned (these <u>cannot</u> be bypassed with a 4chan Pass).</p>
 </dd>
 <dt id="spam">What if spammers abuse this?</dt>
 <dd>
@@ -933,8 +949,8 @@ subject to post timers and a Pass may only be associated with one IP address at 
 <li><a href="/japanese">日本語</a></li>
 </ul>
 <br class="clear-bug" />
-<div id="copyright"><a href="/faq#what4chan">About</a> &bull; <a href="/feedback">Feedback</a> &bull; <a href="/legal">Legal</a> &bull; <a href="/contact">Contact</a><br /><br /><br />
-Copyright &copy; 2003-2021 4chan community support LLC. All rights reserved.
+<div id="copyright"><a href="/faq#what4chan">About</a> &bull; <a href="/feedback">Feedback</a> &bull; <a href="/legal">Legal</a> &bull; <a href="/contact">Contact</a><br/><br/><br/>
+Copyright &copy; 2003-2023 4chan community support LLC. All rights reserved.
 </div>
 </div>
 </div>
