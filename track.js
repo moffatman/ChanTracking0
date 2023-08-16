@@ -99,7 +99,7 @@ var loadJsonAndBeautify = function(url, name) {
 var loadCssAndBeautify = function(url, name) {
     get(url, function(body) {
         log('Beautifying ' + name + '.css');
-        var nice = prettyCss.parse(body);
+        var nice = prettyCss.parse(body).toString();
 
         fs.writeFileSync('css/' + name + '.css', nice);
     });
@@ -122,7 +122,7 @@ var load = function() {
 
     get('https://boards.4chan.org/g/', function(body) {
         var dom = cheerio.load(body);
-        var sticky = dom('#t51971506');
+        var sticky = dom('#t76759434');
         var stickyHtml = sticky.html();
         // Force 0
         stickyHtml = stickyHtml.replace(/\d.t.4cdn.org/gi, '0.t.4cdn.org');
