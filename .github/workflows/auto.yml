@@ -1,0 +1,30 @@
+
+name: Scrape and Modify data
+
+on:
+  push:
+    branches:
+      - main  # Change this to the main branch name if it's different
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out this repo
+      uses: actions/checkout@v2
+    - name: lol
+      run: |
+        npm install --silent
+        node track.js
+    - name: Commit and push if it changed
+      run: |-
+        git config user.name "BOT"
+        git config user.email "actions@users.noreply.github.com"
+        git add -A
+        timestamp=$(date -u)
+        git commit -m "$(git status --porcelain)" || exit 0
+        git push
