@@ -174,7 +174,7 @@ var load = function() {
         fs.mkdirSync('reports', { recursive: true });
     
         get(reportUrl, function(body) {
-            var updatedBody = body.replace(new RegExp(threadnum, 'g'), '');
+            var updatedBody = body.replace(new RegExp(threadnum, 'g'), 'snip');
             var beautifiedBody = htmlBeautify.prettyPrint(updatedBody);
     
             fs.writeFileSync(reportPath, beautifiedBody);
