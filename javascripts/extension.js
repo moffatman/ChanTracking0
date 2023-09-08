@@ -1673,7 +1673,7 @@ PostMenu.open = function(btn) {
       if (Main.hasMobileLayout) {
         html += '<li><a href="#" data-id="' + pid
           + '" data-cmd="del-file">Delete file</a></li>'
-          + '<li><a href="https://lens.google.com/uploadbyurl?url=' + href
+          + '<li><a href="https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&amp;image_url=' + href
           + '" target="_blank">Search image on Google</a></li>'
           + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
           + '&amp;rpt=imageview" target="_blank">Search image on Yandex</a></li>'
@@ -1682,7 +1682,7 @@ PostMenu.open = function(btn) {
       }
       else {
         html += '<li><ul>'
-          + '<li><a href="https://lens.google.com/uploadbyurl?url=' + href
+          + '<li><a href="https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&amp;image_url=' + href
           + '" target="_blank">Google</a></li>'
           + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
           + '&amp;rpt=imageview" target="_blank">Yandex</a></li>'
