@@ -1020,7 +1020,7 @@ function initAdsDanbo() {
   }
   
   window.addEventListener('message', function(e) {
-    if (e.origin === 'https://hakurei.danbo.org' && e.data && e.data.origin === 'danbo') {
+    if (e.origin === 'https://hakurei.cdnbo.org' && e.data && e.data.origin === 'danbo') {
       window.initAdsFallback(e.data.unit_id);
     }
   });
