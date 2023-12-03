@@ -1312,6 +1312,7 @@ function toggleMobilePostForm(index, scrolltotop) {
     elem.innerHTML = 'Close Post Form';
     initRecaptcha();
     initTCaptcha();
+    checkIncognito();
   }
   else {
     elem.className = elem.className.replace('shown', 'hidden');
@@ -2080,6 +2081,94 @@ function oeReplay(id) {
   PainterCore.replay(id);
 }
 
+/*! https://github.com/Joe12387/detectIncognito */
+function checkIncognito() {
+  if (window.isIncognito !== undefined) {
+    return;
+  }
+  
+  if (!navigator.maxTouchPoints || navigator.vendor === undefined) {
+    window.isIncognito = false;
+    return;
+  }
+  
+  (new Promise(function(resolve, reject) {
+    let eh = eval.toString().length;
+    
+    if (navigator.vendor.indexOf('Apple') === 0 && eh === 37) {
+      if (navigator.maxTouchPoints === undefined) {
+        resolve(false);
+      }
+      
+      let db_name = Math.random().toString();
+      
+      try {
+        let db = window.indexedDB.open(db_name, 1);
+        db.onupgradeneeded = function (e) {
+          let res = e.target.result;
+          try {
+            res.createObjectStore('test', { autoIncrement: true }).put(new Blob);
+            resolve(false);
+          }
+          catch(err) {
+            let msg;
+            if (err instanceof Error) {
+              msg = err.message;
+            }
+            if (typeof msg !== 'string') {
+              resolve(false);
+            }
+            resolve(/BlobURLs are not yet supported/.test(msg));
+          }
+          finally {
+            res.close();
+            window.indexedDB.deleteDatabase(db_name);
+          }
+        };
+      }
+      catch(err) {
+        resolve(false);
+      }
+    }
+    else if (navigator.vendor.indexOf('Google') === 0 && eh === 33) {
+      let hsl;
+      
+      try {
+        hsl = performance.memory.jsHeapSizeLimit;
+      }
+      catch(err) {
+        hsl = 1073741824;
+      }
+      
+      navigator.webkitTemporaryStorage.queryUsageAndQuota(function (_, quota) {
+        let q = Math.round(quota / (1024 * 1024));
+        let q_lim = Math.round(hsl / (1024 * 1024)) * 2;
+        resolve(q < q_lim);
+      }, function (err) {
+        resolve(false);
+      });
+    }
+    else if (document.body.style.MozAppearance !== undefined && eh === 37) {
+      resolve(navigator.serviceWorker === undefined);
+    }
+    else {
+      resolve(false);
+    }
+  })).then((v) => window.isIncognito = v);
+}
+
+function onPostFormSubmit(e) {
+  let el = $.id('postFile');
+  if (el && el.value && window.isIncognito) {
+    e.stopPropagation()
+    e.preventDefault();
+    el.value = '';
+    showPostFormError('Uploading files in incognito mode is not allowed.'
+      + '<br>The File field has been cleared.');
+    return false;
+  }
+}
+
 function contentLoaded() {
   var i, el, el2, nodes, len, mobileSelect, params, board, val, fn;
   
@@ -2092,6 +2181,7 @@ function contentLoaded() {
   if (document.post) {
     document.post.name.value = get_cookie("4chan_name");
     document.post.email.value = get_cookie("options");
+    document.post.addEventListener('submit', onPostFormSubmit, false);
   }
   
   cloneTopNav();

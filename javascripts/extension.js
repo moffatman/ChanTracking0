@@ -4042,6 +4042,8 @@ QR.show = function(tid) {
   var i, j, cnt, postForm, form, qrForm, fields, row, spoiler, file,
     el, el2, placeholder, qrError, cookie, mfs;
   
+  window.checkIncognito && window.checkIncognito();
+  
   if (QR.currentTid) {
     if (!Main.tid && QR.currentTid != tid) {
       $.id('qrTid').textContent = $.id('qrResto').value = QR.currentTid = tid;
@@ -4701,6 +4703,16 @@ QR.presubmitChecks = function(force) {
       QR.btn.value = QR.cooldown + 's';
     }
     return false;
+  }
+  
+  if (window.isIncognito) {
+    let el = $.id('qrFile');
+    if (el && el.value && !QR.painterData) {
+      QR.showPostError('Uploading files in incognito mode is not allowed.'
+        + '<br>The File field has been cleared.');
+      QR.resetFile();
+      return false;
+    }
   }
   
   return true;
