@@ -1724,7 +1724,7 @@ function setActiveStyleSheet(title, init) {
 
   if (!init) {
     if (title !== '_special') {
-      createCookie(style_group, title, 365, $L.d(location.pathname.split(/\//)[1]));
+      createCookie(style_group, title, 365, location.host.indexOf('4channel.org') === -1 ? '4chan.org' : '4channel.org');
       
       if (window.css_event) {
         fn = window['fc_' + window.css_event + '_cleanup'];
