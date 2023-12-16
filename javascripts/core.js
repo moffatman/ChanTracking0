@@ -1,6 +1,6 @@
 var $L = {
   nws: {"aco":1,"b":1,"bant":1,"d":1,"e":1,"f":1,"gif":1,"h":1,"hc":1,"hm":1,"hr":1,"i":1,"ic":1,"pol":1,"r":1,"r9k":1,"s":1,"s4s":1,"soc":1,"t":1,"trash":1,"u":1,"wg":1,"y":1},
-  blue: '4channel.org', red: '4chan.org',
+  blue: '4chan.org', red: '4chan.org',
   d: function(b) {
     return $L.nws[b] ? $L.red : $L.blue;
   }
@@ -1046,7 +1046,7 @@ function initAdsFallback(slot_id) {
     return;
   }
   
-  let is_burichan = location.host.indexOf('4channel') !== -1;
+  let is_burichan = document.body.classList.contains('ws');
   
   let hr = is_burichan ? 0.1 : 0.01;
   
