@@ -594,6 +594,7 @@ var Tip = {
 /**
  * Settings Syncher
  */
+/*
 var StorageSync = {
   queue: [],
   
@@ -682,7 +683,7 @@ var StorageSync = {
     self.remoteFrame.postMessage({ storage: data }, self.remoteOrigin);
   }
 };
-
+*/
 function mShowFull(t) {
   var el, data;
   
@@ -910,20 +911,20 @@ function initAdsPF(cnt, slot_id) {
   let sid, nid;
   
   if (slot_id == 1) {
-    sid = '63fe2daee452af0027734a72';
-    nid = 'pf-3738-1';
+    sid = '657b2d8958f9186175770b1f';
+    nid = 'pf-6892-1';
   }
   else if (slot_id == 2) {
-    sid = '63fe559b1cfcf200287c0f78';
-    nid = 'pf-3739-1';
+    sid = '657b2d9d58f9186175770b37';
+    nid = 'pf-6893-1';
   }
   else if (slot_id == 3) {
-    sid = '63fe2d9799195d002722d70d';
-    nid = 'pf-3737-1';
+    sid = '657b2d56256794003cd16fe4';
+    nid = 'pf-6890-1';
   }
   else if (slot_id == 4) {
-    sid = '63fe55ae667fae00280cbfbc';
-    nid = 'pf-3740-1';
+    sid = '657b2d74256794003cd17019';
+    nid = 'pf-6891-1';
   }
   else {
     return;
@@ -1736,7 +1737,7 @@ function setActiveStyleSheet(title, init) {
       localStorage.removeItem('4chan_stop_css_event');
     }
     
-    StorageSync.sync('4chan_stop_css_event');
+    //StorageSync.sync('4chan_stop_css_event');
     
     activeStyleSheet = title;
     

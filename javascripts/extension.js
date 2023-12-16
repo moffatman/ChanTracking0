@@ -317,7 +317,7 @@ Parser.saveTrackedReplies = function(tid, replies) {
   
   localStorage.setItem(key, JSON.stringify(replies));
   
-  StorageSync.sync(key);
+  //StorageSync.sync(key);
 };
 
 Parser.touchTrackedReplies = function(tid) {
@@ -360,7 +360,7 @@ Parser.pruneTrackedReplies = function() {
         flag = true;
         delete tracked[tid];
         localStorage.removeItem(pfx + tid);
-        StorageSync.queue.push(pfx + tid);
+        //StorageSync.queue.push(pfx + tid);
       }
     }
     
@@ -372,10 +372,10 @@ Parser.pruneTrackedReplies = function() {
         break;
       }
       
-      StorageSync.queue.push(pfx + 'ts');
+      //StorageSync.queue.push(pfx + 'ts');
     }
     
-    StorageSync.send();
+    //StorageSync.send();
   }
 };
 
@@ -5532,11 +5532,11 @@ ThreadWatcher.save = function() {
   
   localStorage.setItem('4chan-watch', JSON.stringify(ThreadWatcher.watched));
   
-  StorageSync.sync('4chan-watch');
+  //StorageSync.sync('4chan-watch');
   
   for (i in ThreadWatcher.blacklisted) {
     localStorage.setItem('4chan-watch-bl', JSON.stringify(ThreadWatcher.blacklisted));
-    StorageSync.sync('4chan-watch-bl');
+    //StorageSync.sync('4chan-watch-bl');
     break;
   }
 };
@@ -5585,7 +5585,7 @@ ThreadWatcher.canAutoRefresh = function() {
 
 ThreadWatcher.setRefreshTimestamp = function() {
   localStorage.setItem('4chan-tw-timestamp', Date.now());
-  StorageSync.sync('4chan-tw-timestamp');
+  //StorageSync.sync('4chan-tw-timestamp');
 };
 
 ThreadWatcher.refreshWithAutoWatch = function() {
@@ -8986,7 +8986,7 @@ Config.toURL = function() {
 Config.save = function(old) {
   localStorage.setItem('4chan-settings', JSON.stringify(Config));
   
-  StorageSync.sync('4chan-settings');
+  //StorageSync.sync('4chan-settings');
   
   if (!old) {
     return;
@@ -9849,7 +9849,7 @@ Main.toggleGlobalMessage = function() {
     localStorage.setItem('4chan-global-msg', msg.getAttribute('data-utc'));
   }
   
-  StorageSync.sync('4chan-global-msg');
+  //StorageSync.sync('4chan-global-msg');
 };
 
 Main.setStickyNav = function() {
