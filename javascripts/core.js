@@ -1397,7 +1397,7 @@ function initStyleSheet() {
     activeStyleSheet = cookie ? cookie : getPreferredStyleSheet();
   }
   
-  if (window.css_event && localStorage.getItem('4chan_stop_css_event') !== window.css_event) {
+  if (window.css_event && localStorage.getItem('4chan_stop_css_event') !== `${window.css_event}-${window.css_event_v}`) {
     activeStyleSheet = '_special';
   }
   
@@ -1729,7 +1729,7 @@ function setActiveStyleSheet(title, init) {
       
       if (window.css_event) {
         fn = window['fc_' + window.css_event + '_cleanup'];
-        localStorage.setItem('4chan_stop_css_event', window.css_event);
+        localStorage.setItem('4chan_stop_css_event', `${window.css_event}-${window.css_event_v}`);
       }
     }
     else if (window.css_event) {
