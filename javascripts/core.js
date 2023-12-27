@@ -306,7 +306,7 @@ var TCaptcha = {
   },
   
   onFrameTimeout: function(src) {
-    TCaptcha.destroyFrame();
+    //TCaptcha.destroyFrame();
     
     console.log('Captcha frame timeout');
     
