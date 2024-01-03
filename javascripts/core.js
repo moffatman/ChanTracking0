@@ -301,20 +301,24 @@ var TCaptcha = {
     self.frameNode = self.buildFrameNode();
     self.toggleImgCntNode(false);
     self.node.insertBefore(self.frameNode, self.imgCntNode);
-    self.frameTimeout = setTimeout(self.onFrameTimeout, 30000, src);
+    self.frameTimeout = setTimeout(self.onFrameTimeout, 60000, src);
     self.frameNode.src = src;
   },
   
   onFrameTimeout: function(src) {
-    //TCaptcha.destroyFrame();
+    let self = TCaptcha;
     
     console.log('Captcha frame timeout');
     
-    if (TCaptcha.errorCb) {
-      TCaptcha.errorCb.call(null, `Couldn't get the captcha.
-Make sure your browser doesn't block cookies then click
-<a href="javascript:void(0);" onclick="window.open('${src.replace('framed=1', 'opened=1')}',
-'_blank', 'width=400,height=200')">here</a>.`);
+    clearTimeout(self.frameTimeout);
+    self.frameTimeout = null;
+    
+    self.unlockReloadBtn();
+    
+    if (self.errorCb) {
+      self.errorCb.call(null, `Couldn't get the captcha.
+Make sure your browser doesn't block content on 4chan then click
+<a href="${src.replace('framed=1', 'opened=1')}" rel="opener" target="_blank">here</a>.`);
     }
   },
   
