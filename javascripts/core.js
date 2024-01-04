@@ -51,6 +51,7 @@ var TCaptcha = {
     this.node = el;
     
     el.style.position = 'relative';
+    el.style.width = '300px';
     
     this.frameNode = null;
     this.imgCntNode = this.buildImgCntNode();
