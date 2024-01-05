@@ -36,6 +36,8 @@ var TCaptcha = {
   
   domain: null,
   
+  failCd: 60,
+  
   init: function(el, board, thread_id) {
     if (this.node) {
       this.destroy();
@@ -276,6 +278,18 @@ var TCaptcha = {
     }
   },
   
+  onFrameError: function(e) {
+    TCaptcha.unlockReloadBtn();
+    
+    console.log(e);
+    
+    if (TCaptcha.errorCb) {
+      TCaptcha.errorCb.call(null,
+        "Couldn't load the captcha frame. Check your content blocker settings."
+      );
+    }
+  },
+  
   load: function(board, thread_id) {
     let self = TCaptcha;
     
@@ -309,17 +323,14 @@ var TCaptcha = {
   onFrameTimeout: function(src) {
     let self = TCaptcha;
     
+    self.destroyFrame();
+    
     console.log('Captcha frame timeout');
-    
-    clearTimeout(self.frameTimeout);
-    self.frameTimeout = null;
-    
-    self.unlockReloadBtn();
     
     if (self.errorCb) {
       self.errorCb.call(null, `Couldn't get the captcha.
 Make sure your browser doesn't block content on 4chan then click
-<a href="${src.replace('framed=1', 'opened=1')}" rel="opener" target="_blank">here</a>.`);
+<a href="${src.replace('framed=1', 'opened=1')}" target="_blank">here</a>.`);
     }
   },
   
@@ -350,6 +361,16 @@ Make sure your browser doesn't block content on 4chan then click
       if (label !== undefined) {
         self.reloadNode.textContent = label;
       }
+    }
+  },
+  
+  onCaptchaFailed: function() {
+    let self = TCaptcha;
+    
+    let cd = self.failCd * 1000;
+    
+    if (self.reloadTs && self.reloadTs < cd) {
+      self.setReloadCd(cd, true);
     }
   },
   
@@ -646,16 +667,6 @@ var StorageSync = {
       }
       
       return;
-    }
-  },
-  
-  onFrameError: function(e) {
-    TCaptcha.unlockReloadBtn();
-    
-    console.log(e);
-    
-    if (TCaptcha.errorCb) {
-      TCaptcha.errorCb.call(null, `${e.type}: ${e.message}`);
     }
   },
   
