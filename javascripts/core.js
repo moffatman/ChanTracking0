@@ -34,20 +34,15 @@ var TCaptcha = {
   
   path: '/captcha',
   
-  domain: null,
+  ticketKey: '4chan-tc-ticket',
+  
+  domain: '4chan.org',
   
   failCd: 60,
   
   init: function(el, board, thread_id) {
     if (this.node) {
       this.destroy();
-    }
-    
-    if (location.host.indexOf('.4channel.org') !== -1) {
-      this.domain = '4channel.org';
-    }
-    else {
-      this.domain = '4chan.org';
     }
     
     this.node = el;
@@ -113,9 +108,9 @@ var TCaptcha = {
     
     self.errorCb = null;
     
-    self.domain = null;
-    
     self.reloadTs = null;
+    
+    self.onReloadCdDone = null;
   },
   
   setErrorCb: function(func) {
@@ -124,6 +119,19 @@ var TCaptcha = {
   
   toggleImgCntNode: function(flag) {
     TCaptcha.imgCntNode.style.display = flag ? 'block' : 'none';
+  },
+  
+  getTicket: function() {
+    return localStorage.getItem(TCaptcha.ticketKey);
+  },
+  
+  setTicket: function(val) {
+    if (val) {
+      localStorage.setItem(TCaptcha.ticketKey, val);
+    }
+    else if (val === false) {
+      localStorage.removeItem(TCaptcha.ticketKey);
+    }
   },
   
   buildFrameNode: function() {
@@ -307,6 +315,12 @@ var TCaptcha = {
       params.push('thread_id=' + thread_id);
     }
     
+    let ticket = self.getTicket();
+    
+    if (ticket) {
+      params.push('ticket=' + ticket);
+    }
+    
     if (params.length > 0) {
       params = '?' + params.join('&');
     }
@@ -374,7 +388,7 @@ Make sure your browser doesn't block content on 4chan then click
     }
   },
   
-  setReloadCd: function(cd, visible) {
+  setReloadCd: function(cd, visible, onDone) {
     let self = TCaptcha;
     
     if (!self.node) {
@@ -383,6 +397,8 @@ Make sure your browser doesn't block content on 4chan then click
     
     clearTimeout(self.reloadTimeout);
     
+    self.onReloadCdDone = onDone;
+    
     if (cd) {
       self.toggleReloadBtn(false);
       if (visible) {
@@ -390,11 +406,19 @@ Make sure your browser doesn't block content on 4chan then click
         self.onReloadCdTick();
       }
       else {
-        self.reloadTimeout = setTimeout(self.toggleReloadBtn, cd, true);
+        self.reloadTimeout = setTimeout(self.stopReloadCd, cd);
       }
     }
     else {
-      self.toggleReloadBtn(true);
+      self.stopReloadCd();
+    }
+  },
+  
+  stopReloadCd: function() {
+    let self = TCaptcha;
+    self.unlockReloadBtn();
+    if (self.onReloadCdDone) {
+      self.onReloadCdDone.call(self);
     }
   },
   
@@ -412,7 +436,7 @@ Make sure your browser doesn't block content on 4chan then click
       self.reloadTimeout = setTimeout(self.onReloadCdTick, Math.min(cd, 1000));
     }
     else {
-      self.unlockReloadBtn();
+      self.stopReloadCd();
     }
   },
   
@@ -436,7 +460,7 @@ Make sure your browser doesn't block content on 4chan then click
   
   toggleMsgOverlay: function(flag, txt) {
     if (txt !== undefined) {
-      TCaptcha.msgNode.textContent = txt;
+      TCaptcha.msgNode.innerHTML = txt;
     }
     TCaptcha.msgNode.style.display = flag ? 'block' : 'none';
   },
@@ -444,6 +468,33 @@ Make sure your browser doesn't block content on 4chan then click
   onSliderInput: function() {
     var m = -Math.floor((+this.value) / 100 * this.twisterDelta);
     TCaptcha.bgNode.style.backgroundPositionX = m + 'px';
+  },
+  
+  onTicketPcdTick: function() {
+    let self = TCaptcha;
+    
+    let el = document.getElementById('t-pcd');
+    
+    if (!el) {
+      return;
+    }
+    
+    let pcd = +el.getAttribute('data-pcd');
+    
+    pcd = pcd - (0 | (Date.now() / 1000));
+    
+    if (pcd <= 0) {
+      self.onTicketPcdEnd();
+      return;
+    }
+    
+    el.textContent = pcd;
+    
+    setTimeout(self.updateTicketPcd, 1000);
+  },
+  
+  clearTicketOverlay: function() {
+    TCaptcha.toggleMsgOverlay(false);
   },
   
   buildFromJson: function(data) {
@@ -457,12 +508,19 @@ Make sure your browser doesn't block content on 4chan then click
     self.toggleSlider(false);
     self.toggleMsgOverlay(false);
     
+    self.setTicket(data.ticket);
+    
     if (TCaptcha.errorCb) {
       TCaptcha.errorCb.call(null, '');
     }
     
     if (data.cd) {
       self.setReloadCd(data.cd * 1000, !data.challenge);
+    }
+    
+    if (data.pcd) {
+      self.buildTicket(data);
+      return;
     }
     
     if (data.error) {
@@ -511,6 +569,14 @@ Make sure your browser doesn't block content on 4chan then click
     let self = TCaptcha;
     self.fgNode.style.backgroundImage = 'url(data:image/png;base64,' + data.img + ')';
     self.bgNode.style.backgroundImage = '';
+  },
+  
+  buildTicket: function(data) {
+    let self = TCaptcha;
+    self.toggleMsgOverlay(true, 'Please wait a while before making a post');
+    self.fgNode.style.backgroundImage = '';
+    self.bgNode.style.backgroundImage = '';
+    self.setReloadCd(data.pcd * 1000, true, self.clearTicketOverlay);
   },
   
   buildNoop: function(data) {
