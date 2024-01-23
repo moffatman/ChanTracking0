@@ -460,7 +460,7 @@ Make sure your browser doesn't block content on 4chan then click
   
   toggleMsgOverlay: function(flag, txt) {
     if (txt !== undefined) {
-      TCaptcha.msgNode.innerHTML = txt;
+      TCaptcha.msgNode.textContent = txt;
     }
     TCaptcha.msgNode.style.display = flag ? 'block' : 'none';
   },
@@ -573,7 +573,7 @@ Make sure your browser doesn't block content on 4chan then click
   
   buildTicket: function(data) {
     let self = TCaptcha;
-    self.toggleMsgOverlay(true, 'Please wait a while before making a post');
+    self.toggleMsgOverlay(true, data.pcd_msg || 'Please wait a while.');
     self.fgNode.style.backgroundImage = '';
     self.bgNode.style.backgroundImage = '';
     self.setReloadCd(data.pcd * 1000, true, self.clearTicketOverlay);
