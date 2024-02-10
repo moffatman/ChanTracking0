@@ -269,16 +269,8 @@
 		padding-left: 0;
 	}
 	
-	.is_index div.thread {
-		padding: 0 7px;
-	}
-	
 	.is_index div.replyContainer {
 		margin: 7px 0 0 0;
-	}
-	
-	.is_index div.opContainer {
-		margin: 0 -7px;
 	}
 	
 	div.opContainer {
@@ -937,6 +929,7 @@
 	
 	.reply:target, .reply:focus, .reply.highlight {
 		background: #d6bad0 !important;
+		border: none !important;
 	}
 	
 	.mFileInfo {

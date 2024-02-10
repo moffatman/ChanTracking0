@@ -3191,6 +3191,8 @@ ImageExpansion.expandWebm = function(thumb) {
     fileText.appendChild(el);
   }
   
+  $.addClass(link.parentNode, 'image-expanded');
+  
   el.firstElementChild.addEventListener('click', self.collapseWebm, false);
   
   return true;
@@ -3218,8 +3220,12 @@ ImageExpansion.fitWebm = function() {
   
   left = player.getBoundingClientRect().left;
   
-  maxWidth = document.documentElement.clientWidth - left - 25;
+  maxWidth = document.documentElement.clientWidth - left;
   maxHeight = document.documentElement.clientHeight;
+  
+  if (!Main.hasMobileLayout) {
+    maxWidth -= 25;
+  }
   
   imgWidth = player.videoWidth;
   imgHeight = player.videoHeight;
@@ -3278,6 +3284,8 @@ ImageExpansion.collapseWebm = function(e) {
   this.removeEventListener('click', ImageExpansion.collapseWebm, false);
   
   cnt = this.parentNode;
+  
+  $.removeClass(cnt.parentNode, 'image-expanded');
   
   if (Main.hasMobileLayout) {
     el = cnt.previousElementSibling;
@@ -11256,7 +11264,7 @@ body.m-dark { background: #1D1F21 none; color: #C5C8C6; }\
 .m-dark .mobile-report:before { color: #1d1f21 !important; }\
 .m-dark hr, .m-dark div.board > hr { border-top: 1px solid #282A2E; }\
 .m-dark div.opContainer,\
-.m-dark div.reply { background-color: #282A2E; border: 1px solid #2D2F33 !important; }\
+.m-dark div.reply { background-color: #282A2E; }\
 .m-dark .preview { background-color: #282A2E; border: 1px solid #333 !important; }\
 .m-dark div.post div.postInfoM { background-color: #212326; border-bottom: 1px solid #2D2F33; }\
 .m-dark div.postLink,\
