@@ -193,7 +193,6 @@
 		border-top: 1px solid #b7c5d9;
 		padding: 5px;
 		overflow: hidden;
-		margin: -5px;
 	}
 	
 	div.postLink span {
@@ -274,7 +273,8 @@
 	}
 	
 	div.opContainer {
-		padding: 5px;
+		margin: 5px 0 0;
+		padding-left: 0;
 		display: block;
 		overflow: hidden;
 		background-color: #d6daf0;
@@ -323,7 +323,6 @@
 		border-bottom: 1px solid #b7c5d9;
 		background-color: #c9cde8;
 		padding: 5px;
-		margin: -5px -6px 5px -5px;
 	}
 	
 	div.replyContainer div.postInfoM {
