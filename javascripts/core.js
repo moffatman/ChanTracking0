@@ -40,9 +40,15 @@ var TCaptcha = {
   
   failCd: 60,
   
-  init: function(el, board, thread_id) {
+  tabindex: null,
+  
+  init: function(el, board, thread_id, tabindex) {
     if (this.node) {
       this.destroy();
+    }
+    
+    if (tabindex) {
+      this.tabindex = tabindex;
     }
     
     this.node = el;
@@ -196,6 +202,9 @@ var TCaptcha = {
     el.style.padding = '0 2px';
     el.style.fontFamily = 'monospace';
     el.style.verticalAlign = 'middle';
+    if (this.tabindex) {
+      el.setAttribute('tabindex', this.tabindex + 2);
+    }
     return el;
   },
   
@@ -215,6 +224,9 @@ var TCaptcha = {
     el.min = 0;
     el.max = 100;
     el.addEventListener('input', this.onSliderInput, false);
+    if (this.tabindex) {
+      el.setAttribute('tabindex', this.tabindex + 1);
+    }
     return el;
   },
   
@@ -240,6 +252,9 @@ var TCaptcha = {
     el.setAttribute('data-board', board);
     el.setAttribute('data-tid', thread_id);
     el.addEventListener('click', this.onReloadClick, false);
+    if (this.tabindex) {
+      el.setAttribute('tabindex', this.tabindex);
+    }
     return el;
   },
   
@@ -974,7 +989,7 @@ function initTCaptcha() {
       thread_id = 0;
     }
     
-    TCaptcha.init(el, board, thread_id);
+    TCaptcha.init(el, board, thread_id, 5);
     TCaptcha.setErrorCb(window.showPostFormError);
   }
 }
