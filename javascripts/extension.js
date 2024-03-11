@@ -4544,6 +4544,10 @@ QR.submit = function(force) {
   
   QR.xhr.withCredentials = true;
   
+  if (Main.board == 'tg') {
+    QR.xhr.setRequestHeader('Accept', 'application/json');
+  }
+  
   QR.xhr.upload.onprogress = function(e) {
     if (e.loaded >= e.total) {
       QR.btn.value = '100%';
@@ -4566,7 +4570,32 @@ QR.submit = function(force) {
     QR.btn.value = 'Post';
     
     if (this.status == 200) {
-      if (resp = this.responseText.match(/"errmsg"[^>]*>(.*?)<\/span/)) {
+      if (this.getResponseHeader("Content-Type") == 'application/json') {
+        try {
+          resp = JSON.parse(this.responseText);
+        }
+        catch (e) {
+          console.log('QR resp', e);
+          resp = { error: 'Something went wrong.' };
+        }
+        
+        if (resp.error) {
+          if (window.passEnabled && /4chan Pass/.test(resp.error)) {
+            QR.onPassError();
+          }
+          else {
+            QR.resetCaptcha();
+          }
+          QR.showPostError(resp.error);
+          return;
+        }
+        
+        if (resp.pid) {
+          tid = resp.tid;
+          pid = resp.pid;
+        }
+      }
+      else if (resp = this.responseText.match(/"errmsg"[^>]*>(.*?)<\/span/)) {
         if (window.passEnabled && /4chan Pass/.test(resp)) {
           QR.onPassError();
         }
@@ -4576,11 +4605,12 @@ QR.submit = function(force) {
         QR.showPostError(resp[1]);
         return;
       }
-      
-      if (ids = this.responseText.match(/<!-- thread:([0-9]+),no:([0-9]+) -->/)) {
+      else if (ids = this.responseText.match(/<!-- thread:([0-9]+),no:([0-9]+) -->/)) {
         tid = ids[1];
         pid = ids[2];
-        
+      }
+      
+      if (pid) {
         hasFile = (el = $.id('qrFile')) && el.value;
         
         QR.setPostTime();
