@@ -4544,9 +4544,7 @@ QR.submit = function(force) {
   
   QR.xhr.withCredentials = true;
   
-  if (Main.board == 'tg') {
-    QR.xhr.setRequestHeader('Accept', 'application/json');
-  }
+  QR.xhr.setRequestHeader('Accept', 'application/json');
   
   QR.xhr.upload.onprogress = function(e) {
     if (e.loaded >= e.total) {
