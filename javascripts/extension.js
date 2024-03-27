@@ -1649,13 +1649,6 @@ PostMenu.open = function(btn) {
     html += '<li data-cmd="hide-r" data-id="' + pid + '">'
       + ($.hasClass(el, 'post-hidden') ? 'Unhide' : 'Hide')
       + ' post</li>';
-    /*
-    if (Main.tid) {
-      html += '<li data-cmd="hide-r" data-recurse="1" data-id="' + pid + '">'
-        + ($.hasClass(el, 'post-hidden') ? 'Unhide' : 'Hide')
-        + ' recursively</li>';
-    }
-    */
   }
   
   if (Main.hasMobileLayout) {
@@ -1668,11 +1661,13 @@ PostMenu.open = function(btn) {
     
     if (el) {
       href = 'http://i.4cdn.org/' + Main.board + '/'
-        + el.href.match(/\/([0-9]+)\..+$/)[1] + 's.jpg';
+        + el.href.match(/\/([0-9]+)m?\..+$/)[1] + 's.jpg';
       
       if (Main.hasMobileLayout) {
         html += '<li><a href="#" data-id="' + pid
           + '" data-cmd="del-file">Delete file</a></li>'
+          + '<li><a href="' + (el.getAttribute('data-orig') || el.href)
+            + '" target="_blank">Open original file</a></li>'
           + '<li><a href="https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&amp;image_url=' + href
           + '" target="_blank">Search image on Google</a></li>'
           + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
@@ -3105,6 +3100,7 @@ ImageExpansion.setMobileSrc = function(a) {
   
   a.removeAttribute('data-m');
   href = a.getAttribute('href');
+  a.setAttribute('data-orig', href);
   href = href.replace(/\/([0-9]+).+$/, '/$1m.jpg');
   a.setAttribute('href', href);
   
