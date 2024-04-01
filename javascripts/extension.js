@@ -854,12 +854,11 @@ Parser.buildHTMLFromJSON = function(data, board, standalone, fromQuote) {
   
   container.className = 'postContainer ' + postType + 'Container';
   container.id = 'pc' + data.no;
-  /*
-  if (data.xa20 !== undefined && !data.capcode) {
-    capcodeStart = '  <span class="xa20e"></span>';
-    container.className += ' xa20' + data.xa20;
+  
+  if (data.xa24) {
+    container.className += ' p-xa24-' + data.xa24;
   }
-  */
+  
   container.innerHTML =
     (isOP ? '' : '<div class="sideArrows" id="sa' + data.no + '">&gt;&gt;</div>') +
     '<div id="p' + data.no + '" class="post ' + postType + highlight + '">' +
@@ -882,6 +881,7 @@ Parser.buildHTMLFromJSON = function(data, board, standalone, fromQuote) {
           '<span class="name">' + name + '</span>'
           + tripcode
           + (data.since4pass ? (' <span title="Pass user since ' + data.since4pass + '" class="n-pu"></span>') : '')
+          + (data.xa24 ? (' <span data-tip="' + data.xa24 + '" class="n-xa24 n-xa24-' + data.xa24 + '"></span>') : '')
           + capcodeStart + emailEnd + capcode + userId + flag +
         ' </span> ' +
         '<span class="dateTime" data-utc="' + data.time + '">' + data.now + '</span> ' +
