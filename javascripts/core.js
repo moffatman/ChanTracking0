@@ -475,7 +475,7 @@ Make sure your browser doesn't block content on 4chan then click
   
   toggleMsgOverlay: function(flag, txt) {
     if (txt !== undefined) {
-      TCaptcha.msgNode.textContent = txt;
+      TCaptcha.msgNode.innerHTML = txt;
     }
     TCaptcha.msgNode.style.display = flag ? 'block' : 'none';
   },
