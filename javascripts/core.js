@@ -1074,47 +1074,54 @@ function initAdsADT(scope) {
   }
 }
 
+function danboAddSlot(n, b, m, s) {
+  let pubid = 27;
+  
+  let el = document.createElement('div');
+  el.className = 'danbo_dta';
+  
+  if (m) {
+    if (s) {
+      s = '3';
+    }
+    else {
+      s = '4';
+      el.id = 'js-danbo-rld';
+    }
+    el.setAttribute('data-danbo', `${pubid}-${b}-${s}-300-250`);
+    el.classList.add('danbo-m');
+  }
+  else {
+    if (s) {
+      s = '1';
+    }
+    else {
+      s = '2';
+      el.id = 'js-danbo-rld';
+    }
+    el.setAttribute('data-danbo', `${pubid}-${b}-${s}-728-90`);
+    el.classList.add('danbo-d');
+  }
+  
+  n.appendChild(el);
+  
+  return el;
+}
+
 function initAdsDanbo() {
   if (!window.Danbo) {
     return;
   }
   
-  let pubid = 27;
-  
   let b = location.pathname.split(/\//)[1] || '_';
-  
-  let nodes = document.getElementsByClassName('danbo-slot');
   
   let m = window.matchMedia && window.matchMedia('(max-width: 480px)').matches;
   
+  let nodes = document.getElementsByClassName('danbo-slot');
+  
   for (let cnt of nodes) {
     let s = cnt.id === 'danbo-s-t';
-    
-    let el = document.createElement('div');
-    el.className = 'danbo_dta';
-    
-    if (m) {
-      if (s) {
-        s = '3';
-      }
-      else {
-        s = '4';
-      }
-      el.setAttribute('data-danbo', `${pubid}-${b}-${s}-300-250`);
-      el.classList.add('danbo-m');
-    }
-    else {
-      if (s) {
-        s = '1';
-      }
-      else {
-        s = '2';
-      }
-      el.setAttribute('data-danbo', `${pubid}-${b}-${s}-728-90`);
-      el.classList.add('danbo-d');
-    }
-    
-    cnt.appendChild(el);
+    danboAddSlot(cnt, b, m, s);
   }
   
   window.addEventListener('message', function(e) {
@@ -1124,6 +1131,24 @@ function initAdsDanbo() {
   });
   
   window.Danbo.initialize();
+}
+
+function reloadAdsDanbo() {
+  let cnt = document.getElementById('danbo-s-b');
+  
+  if (!cnt) {
+    return;
+  }
+  
+  cnt.innerHTML = '';
+  
+  let b = 'a';//location.pathname.split(/\//)[1] || '_';
+  
+  let m = window.matchMedia && window.matchMedia('(max-width: 480px)').matches;
+  
+  danboAddSlot(cnt, b, m, false);
+  
+  window.Danbo.reload('js-danbo-rld');
 }
 
 function initAdsFallback(slot_id) {
