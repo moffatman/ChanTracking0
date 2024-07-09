@@ -8486,7 +8486,7 @@ CustomMenu.initCtrl = function() {
     cnt[1] && cnt[1].appendChild(el.cloneNode(true));
   }
 };
-
+/*
 CustomMenu.showNWSBoards = function() {
   var i, el, nodes, len;
   
@@ -8497,7 +8497,7 @@ CustomMenu.showNWSBoards = function() {
     $.removeClass(el, 'nwsb');
   }
 };
-
+*/
 CustomMenu.reset = function() {
   var i, el, full, custom, navs;
   
@@ -8806,7 +8806,7 @@ var Config = {
   stickyNav: false,
   keyBinds: false,
   inlineQuotes: false,
-  showNWSBoards: false,
+  //showNWSBoards: false,
   
   filter: false,
   revealSpoilers: false,
@@ -8989,7 +8989,7 @@ SettingsMenu.options = {
     classicNav: [ 'Use traditional board list', '', false, true ],
     autoHideNav: [ 'Auto-hide on scroll', '', false, true ],
     customMenu: [ 'Custom board list [<a href="javascript:;" data-cmd="custom-menu-edit">Edit</a>]', 'Only show selected boards in top and bottom board lists' ],
-    showNWSBoards: [ 'Show all boards', 'Show all boards in top and bottom board lists on 4channel.org', true],
+    //showNWSBoards: [ 'Show all boards', 'Show all boards in top and bottom board lists on 4channel.org', true],
     alwaysDepage: [ 'Always use infinite scroll', 'Enable infinite scroll by default, so reaching the bottom of the board index will load subsequent pages', true ],
     topPageNav: [ 'Page navigation at top of page', 'Show the page switcher at the top of the page, hold Shift and drag to move' ],
     stickyNav: [ 'Navigation arrows', 'Show top and bottom navigation arrows, hold Shift and drag to move' ],
@@ -9454,11 +9454,11 @@ Main.run = function() {
       $.addClass(document.body, 'isMobileDevice');
     }
   }
-  
+  /*
   if (Main.is_4channel && Config.showNWSBoards) {
     CustomMenu.showNWSBoards();
   }
-  
+  */
   if (Config.linkify) {
     Linkify.init();
   }

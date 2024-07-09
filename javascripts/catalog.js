@@ -255,11 +255,11 @@ var FC = function() {
         
         if (!extConfig.disableAll) {
           CustomMenu.initCtrl(extConfig.dropDownNav, extConfig.classicNav);
-          
+          /*
           if (location.host === 'boards.4channel.org' && extConfig.showNWSBoards) {
             CustomMenu.showNWSBoards();
           }
-          
+          */
           if (extConfig.filter) {
             ThreadWatcher.hasFilters = true;
           }
@@ -3182,7 +3182,7 @@ CustomMenu.initCtrl = function(dropDownNav, classicNav) {
     cnt[1] && cnt[1].appendChild(el.cloneNode(true));
   }
 };
-
+/*
 CustomMenu.showNWSBoards = function() {
   var i, el, nodes, len;
   
@@ -3193,7 +3193,7 @@ CustomMenu.showNWSBoards = function() {
     $.removeClass(el, 'nwsb');
   }
 };
-
+*/
 CustomMenu.reset = function() {
   var i, el, full, custom, navs;
   
