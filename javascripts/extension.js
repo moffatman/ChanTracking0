@@ -1660,15 +1660,20 @@ PostMenu.open = function(btn) {
     el = $.cls('fileThumb', file.parentNode)[0];
     
     if (el) {
-      href = 'http://i.4cdn.org/' + Main.board + '/'
-        + el.href.match(/\/([0-9]+)m?\..+$/)[1] + 's.jpg';
+      if (/(gif|jpg|png)$/.test(el.href)) {
+        href = el.href;
+      }
+      else {
+        href = 'http://i.4cdn.org/' + Main.board + '/'
+          + el.href.match(/\/([0-9]+)m?\..+$/)[1] + 's.jpg';
+      }
       
       if (Main.hasMobileLayout) {
         html += '<li><a href="#" data-id="' + pid
           + '" data-cmd="del-file">Delete file</a></li>'
           + '<li><a href="' + (el.getAttribute('data-orig') || el.href)
             + '" target="_blank">Open original file</a></li>'
-          + '<li><a href="https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&amp;image_url=' + href
+          + '<li><a href="https://lens.google.com/uploadbyurl?url=' + href
           + '" target="_blank">Search image on Google</a></li>'
           + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
           + '&amp;rpt=imageview" target="_blank">Search image on Yandex</a></li>'
@@ -1677,7 +1682,7 @@ PostMenu.open = function(btn) {
       }
       else {
         html += '<li><ul>'
-          + '<li><a href="https://www.google.com/searchbyimage?sbisrc=cr_1_5_2&amp;image_url=' + href
+          + '<li><a href="https://lens.google.com/uploadbyurl?url=' + href
           + '" target="_blank">Google</a></li>'
           + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
           + '&amp;rpt=imageview" target="_blank">Yandex</a></li>'
