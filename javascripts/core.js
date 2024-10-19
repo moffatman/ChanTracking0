@@ -177,12 +177,14 @@ var TCaptcha = {
     let el = document.createElement('div');
     el.id = 't-msg';
     el.style.width = '100%';
+    el.style.height = 'calc(100% - 20px)';
     el.style.position = 'absolute';
-    el.style.top = '50%';
+    el.style.top = '20px';
     el.style.textAlign = 'center';
-    el.style.fontSize = '14px';
+    el.style.fontSize = '12px';
     el.style.filter = 'inherit';
     el.style.display = 'none';
+    el.style.alignContent = 'center';
     return el;
   },
   
@@ -475,9 +477,9 @@ Make sure your browser doesn't block content on 4chan then click
   
   toggleMsgOverlay: function(flag, txt) {
     if (txt !== undefined) {
-      TCaptcha.msgNode.innerHTML = txt;
+      TCaptcha.msgNode.innerHTML = `<div>${txt}</div>`;
     }
-    TCaptcha.msgNode.style.display = flag ? 'block' : 'none';
+    TCaptcha.msgNode.style.display = flag ? 'grid' : 'none';
   },
   
   onSliderInput: function() {
