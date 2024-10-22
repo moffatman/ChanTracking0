@@ -122,7 +122,7 @@ var load = function() {
 
     get('https://boards.4chan.org/g/', function(body) {
         var dom = cheerio.load(body);
-        var sticky = dom('#t76759434');
+        var sticky = dom('#t102519935');
         var stickyHtml = sticky.html();
         // Force 0
         stickyHtml = stickyHtml.replace(/\d.t.4cdn.org/gi, '0.t.4cdn.org');
