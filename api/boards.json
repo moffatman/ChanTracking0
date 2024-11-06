@@ -408,7 +408,7 @@
         "title": "Adult GIF",
         "ws_board": 0,
         "per_page": 15,
-        "pages": 10,
+        "pages": 5,
         "max_filesize": 4194304,
         "max_webm_filesize": 4194304,
         "max_comment_chars": 2000,
@@ -421,7 +421,6 @@
             "images": 30
         },
         "meta_description": "\u0026quot;\/gif\/ - Adult GIF\u0026quot; is 4chan's imageboard dedicated to animated adult GIFs and WEBMs.",
-        "is_archived": 1,
         "webm_audio": 1
     }, {
         "board": "h",
