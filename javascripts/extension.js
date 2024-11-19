@@ -3026,8 +3026,8 @@ ImageExpansion.expand = function(thumb) {
   
   href = a.getAttribute('href');
   
-  if (ext = href.match(/\.(?:webm|pdf)$/)) {
-    if (ext[0] == '.webm') {
+  if (ext = href.match(/\.(?:webm|mp4|pdf)$/)) {
+    if (ext[0] == '.webm' || ext[0] == '.mp4') {
       return ImageExpansion.expandWebm(thumb);
     }
     return false;
@@ -3130,7 +3130,7 @@ ImageExpansion.expandWebm = function(thumb) {
   
   link.style.display = 'none';
   
-  if (/iPhone|iPad/.test(navigator.userAgent)) {
+  if (href.match(/\.webm$/) && /iPhone|iPad/.test(navigator.userAgent)) {
     if (!window.OGVPlayer) {
       OgvCtrl.init();
       self.loadOgv(thumb);
@@ -3467,8 +3467,8 @@ ImageHover.show = function(thumb) {
     href = thumb.getAttribute('href');
   }
   
-  if (ext = href.match(/\.(?:webm|pdf)$/)) {
-    if (ext[0] == '.webm') {
+  if (ext = href.match(/\.(?:webm|mp4|pdf)$/)) {
+    if (ext[0] == '.webm' || ext[0] == '.mp4') {
        ImageHover.showWebm(thumb);
     }
     return;

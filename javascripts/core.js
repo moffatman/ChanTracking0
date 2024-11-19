@@ -1774,14 +1774,15 @@ function showPostFormError(msg) {
 }
 
 function handleFileSelect() {
-  var fsize, maxFilesize;
+  var fsize, ftype, maxFilesize;
   
   if (this.files) {
     maxFilesize = window.maxFilesize;
     
     fsize = this.files[0].size;
+    ftype = this.files[0].type;
     
-    if (this.files[0].type == 'video/webm' && window.maxWebmFilesize) {
+    if (ftype.indexOf('video/') !== -1 && window.maxWebmFilesize) {
       maxFilesize = window.maxWebmFilesize;
     }
     
