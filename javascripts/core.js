@@ -1319,7 +1319,10 @@ function onMobileFormClick(e) {
   
   e.preventDefault();
   
-  if (this.parentNode.id == 'mpostform') {
+  if (window.QR && Main.tid && QR.enabled) {
+    QR.show(Main.tid);
+  }
+  else if (this.parentNode.id == 'mpostform') {
     toggleMobilePostForm(index);
   }
   else {
