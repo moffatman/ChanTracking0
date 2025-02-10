@@ -619,6 +619,8 @@ Make sure your browser doesn't block content on 4chan then click
     }
     
     if (data.mpcd) {
+      self.clearChallenge();
+      self.destroyTicketCaptcha();
       self.buildTicketCaptcha();
       return;
     }
