@@ -1315,7 +1315,7 @@ function initAdsFallback(slot_id) {
 function initAdsHome(cnt) {
   let banners = [
     ['advertise', '1.png', '2.png', '3.png'],
-    ['pass', '4.png', '5.png'],
+    ['pass', '4.png'],
   ];
   
   let banners_m = [
