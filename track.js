@@ -175,6 +175,8 @@ var load = function() {
     
         get(reportUrl, function(body) {
             var updatedBody = body.replace(new RegExp(threadnum, 'g'), 'snip');
+            updatedBody = updatedBody.replace(/core\.min\.\d+\.js/gi, 'core.min.snip.js');
+
             var beautifiedBody = htmlBeautify.prettyPrint(updatedBody);
     
             fs.writeFileSync(reportPath, beautifiedBody);
@@ -228,6 +230,7 @@ var load = function() {
     loadFile('https://www.4chan.org/404foobar', 'pages/404.html', [404]);
     loadFile('https://www.4chan.org/robots.txt', 'pages/robots.txt');
     loadFile('https://www.4chan.org/sitemap.xml', 'pages/sitemap.xml');
+    loadFile('https://www.4chan.org/banned', 'pages/banned.html');
 
     loadFile('https://s.4cdn.org/js/core.' + now + '.js', 'javascripts/core.js');
     loadFile('https://s.4cdn.org/js/extension.' + now + '.js', 'javascripts/extension.js');
