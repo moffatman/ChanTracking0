@@ -228,6 +228,7 @@ var load = function() {
     loadFile('https://www.4chan.org/contact', 'pages/contact.html');
     loadFile('https://www.4chan.org/flash', 'pages/flash.html');
     loadFile('https://www.4chan.org/404foobar', 'pages/404.html', [404]);
+    loadFile('https://boards.4chan.org/.cygnustown/', 'pages/403.html', [403]);
     loadFile('https://www.4chan.org/robots.txt', 'pages/robots.txt');
     loadFile('https://www.4chan.org/sitemap.xml', 'pages/sitemap.xml');
     loadFile('https://www.4chan.org/banned', 'pages/banned.html');
