@@ -74,9 +74,11 @@ var get = function(url, callback, goodCodes) {
         if (error) {
             winston.error(error);
         } else {
-            if (inArray(goodCodes, response.statusCode)) {
+            if (inArray(goodCodes, response.statusCode) && !body.includes('<title>Just a moment...</title>')) {
                 log('Got ' + url);
                 callback(body);
+            } else if (body.includes('<title>Just a moment...</title>')) {
+                logError('Cloudflare challenge: ' + url);
             } else if ((response.statusCode >= 500 && response.statusCode < 600) || response.statusCode == 409) {
                 // Server error / overloaded, ignore
                 log('Got ' + response.statusCode + ' getting ' + url);
