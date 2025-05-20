@@ -1675,7 +1675,7 @@ PostMenu.open = function(btn) {
             + '" target="_blank">Open original file</a></li>'
           + '<li><a href="https://lens.google.com/uploadbyurl?url=' + href
           + '" target="_blank">Search image on Google</a></li>'
-          + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
+          + '<li><a href="https://www.yandex.com/images/search?url=' + href
           + '&amp;rpt=imageview" target="_blank">Search image on Yandex</a></li>'
           + '<li><a href="https://saucenao.com/search.php?url='
           + href + '" target="_blank">Search image on SauceNAO</a></li>';
@@ -1684,7 +1684,7 @@ PostMenu.open = function(btn) {
         html += '<li><ul>'
           + '<li><a href="https://lens.google.com/uploadbyurl?url=' + href
           + '" target="_blank">Google</a></li>'
-          + '<li><a href="https://www.yandex.com/images/search?img_url=' + href
+          + '<li><a href="https://www.yandex.com/images/search?url=' + href
           + '&amp;rpt=imageview" target="_blank">Yandex</a></li>'
           + '<li><a href="https://saucenao.com/search.php?url='
           + href + '" target="_blank">SauceNAO</a></li></ul>Image search &raquo</li>';
