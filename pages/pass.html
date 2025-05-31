@@ -788,10 +788,13 @@ z-index: 2000;
         el.submit();
       }
       
-      document.getElementById('pbc-button').addEventListener('click', onPayClick, false);
-      document.getElementById('pbac-button').addEventListener('click', onCoinbaseClick, false);
+      var el = document.getElementById('pbc-button')
+      el && el.addEventListener('click', onPayClick, false);
       
-      var el = document.getElementById('pbpp-button');
+      el = document.getElementById('pbac-button');
+      el && el.addEventListener('click', onCoinbaseClick, false);
+      
+      el = document.getElementById('pbpp-button');
       el && el.addEventListener('click', onPayPalClick, false);
     </script>
     
