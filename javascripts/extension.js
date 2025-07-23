@@ -7910,7 +7910,7 @@ var Linkify = {
     
     return pfx + '<a href="' + Linkify.derefer
       + encodeURIComponent(url.replace(/\u200b/g, ''))
-      + '" target="_blank" class="linkified" rel="noreferrer nofollow">'
+      + '" target="_blank" class="linkified" rel="noreferrer ugc">'
       + url + '</a>' + sfx;
   }
 };
