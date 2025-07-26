@@ -46,7 +46,7 @@ var TCaptcha = {
   
   tabindex: null,
   
-  hCaptchaSiteKey: '49d294fa-f15c-41fc-80ba-c2544c52ec2a',
+  hCaptchaSiteKey: '390af94e-4ca8-41e2-8dae-4a0e0efae6ae',
   
   init: function(el, board, thread_id, tabindex) {
     if (this.node) {
